@@ -265,7 +265,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/main.SuggestRequest"
+                            "$ref": "#/definitions/controllers.SuggestRequest"
                         }
                     }
                 ],
@@ -273,7 +273,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.SuggestResponse"
+                            "$ref": "#/definitions/controllers.SuggestResponse"
                         }
                     },
                     "400": {
@@ -326,6 +326,34 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.SuggestRequest": {
+            "type": "object",
+            "properties": {
+                "goal": {
+                    "type": "string"
+                },
+                "goal_points": {
+                    "type": "integer"
+                },
+                "tasks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Task"
+                    }
+                }
+            }
+        },
+        "controllers.SuggestResponse": {
+            "type": "object",
+            "properties": {
+                "plans": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SuggestedPlan"
+                    }
+                }
+            }
+        },
         "httputil.HTTPError": {
             "type": "object",
             "properties": {
@@ -356,7 +384,7 @@ const docTemplate = `{
                 "adjusted_plans": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.SuggestedPlan"
+                        "$ref": "#/definitions/models.SuggestedPlan"
                     }
                 },
                 "message": {
@@ -373,7 +401,7 @@ const docTemplate = `{
                 "plans_today": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.Task"
+                        "$ref": "#/definitions/models.Task"
                     }
                 }
             }
@@ -424,35 +452,7 @@ const docTemplate = `{
                 }
             }
         },
-        "main.SuggestRequest": {
-            "type": "object",
-            "properties": {
-                "goal": {
-                    "type": "string"
-                },
-                "goal_points": {
-                    "type": "integer"
-                },
-                "tasks": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/main.Task"
-                    }
-                }
-            }
-        },
-        "main.SuggestResponse": {
-            "type": "object",
-            "properties": {
-                "plans": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/main.SuggestedPlan"
-                    }
-                }
-            }
-        },
-        "main.SuggestedPlan": {
+        "models.SuggestedPlan": {
             "type": "object",
             "properties": {
                 "day": {
@@ -461,12 +461,12 @@ const docTemplate = `{
                 "plans_today": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/main.Task"
+                        "$ref": "#/definitions/models.Task"
                     }
                 }
             }
         },
-        "main.Task": {
+        "models.Task": {
             "type": "object",
             "properties": {
                 "point": {

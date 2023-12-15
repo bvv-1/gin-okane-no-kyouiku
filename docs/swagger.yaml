@@ -1,5 +1,23 @@
 basePath: /
 definitions:
+  controllers.SuggestRequest:
+    properties:
+      goal:
+        type: string
+      goal_points:
+        type: integer
+      tasks:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+    type: object
+  controllers.SuggestResponse:
+    properties:
+      plans:
+        items:
+          $ref: '#/definitions/models.SuggestedPlan'
+        type: array
+    type: object
   httputil.HTTPError:
     properties:
       code:
@@ -20,7 +38,7 @@ definitions:
     properties:
       adjusted_plans:
         items:
-          $ref: '#/definitions/main.SuggestedPlan'
+          $ref: '#/definitions/models.SuggestedPlan'
         type: array
       message:
         type: string
@@ -31,7 +49,7 @@ definitions:
         type: integer
       plans_today:
         items:
-          $ref: '#/definitions/main.Task'
+          $ref: '#/definitions/models.Task'
         type: array
     type: object
   main.GetDailyPlansRequest:
@@ -63,34 +81,16 @@ definitions:
       total_points:
         type: integer
     type: object
-  main.SuggestRequest:
-    properties:
-      goal:
-        type: string
-      goal_points:
-        type: integer
-      tasks:
-        items:
-          $ref: '#/definitions/main.Task'
-        type: array
-    type: object
-  main.SuggestResponse:
-    properties:
-      plans:
-        items:
-          $ref: '#/definitions/main.SuggestedPlan'
-        type: array
-    type: object
-  main.SuggestedPlan:
+  models.SuggestedPlan:
     properties:
       day:
         type: integer
       plans_today:
         items:
-          $ref: '#/definitions/main.Task'
+          $ref: '#/definitions/models.Task'
         type: array
     type: object
-  main.Task:
+  models.Task:
     properties:
       point:
         type: integer
@@ -267,14 +267,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/main.SuggestRequest'
+          $ref: '#/definitions/controllers.SuggestRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.SuggestResponse'
+            $ref: '#/definitions/controllers.SuggestResponse'
         "400":
           description: Bad Request
           schema:

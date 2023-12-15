@@ -15,6 +15,9 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	"gin-okane-no-kyouiku/controllers"
+	"gin-okane-no-kyouiku/models"
 )
 
 // @title okane no kyouiku API
@@ -40,7 +43,7 @@ func main() {
 	}))
 
 	r.GET("/", helloWorld)
-	r.POST("/api/v2/plans/suggest", suggestDailyPlans)
+	r.POST("/api/v2/plans/suggest", controllers.SuggestDailyPlans)
 	r.POST("/api/v1/plans/accept", acceptSuggestedPlans)
 	r.GET("/api/v1/goals", checkGoal)
 	r.GET("/api/v1/plans/check", checkProgress)
@@ -66,55 +69,6 @@ func main() {
 func helloWorld(c *gin.Context) {
 	data := map[string]string{"message": "Hello, World!"}
 	c.JSON(http.StatusOK, data)
-}
-
-type Task struct {
-	Task  string `json:"task"`
-	Point int    `json:"point"`
-}
-
-type SuggestedPlan struct {
-	Day        int    `json:"day"`
-	PlansToday []Task `json:"plans_today"`
-}
-
-type SuggestRequest struct {
-	Goal       string `json:"goal"`
-	GoalPoints int    `json:"goal_points"`
-	Tasks      []Task `json:"tasks"`
-}
-
-type SuggestResponse struct {
-	Plans []SuggestedPlan `json:"plans"`
-}
-
-// @Summary 日々のお手伝いプランを生成するエンドポイント
-// @Description ユーザーが設定した目標とタスクに基づいて日々のお手伝いプランを生成する
-// @ID suggestDailyPlans
-// @Tags plans
-// @Accept json
-// @Produce json
-// @Param request body SuggestRequest true "提案リクエストのボディ"
-// @Success 200 {object} SuggestResponse
-// @Failure 400 {object} httputil.HTTPError
-// @Router /api/v2/plans/suggest [post]
-func suggestDailyPlans(c *gin.Context) {
-	var request SuggestRequest
-
-	if err := c.ShouldBindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": xerrors.Errorf("Invalid data format: %w", err).Error()})
-		return
-	}
-
-	// モックデータを使用してレスポンスを生成
-	response := SuggestResponse{
-		Plans: []SuggestedPlan{
-			{Day: 1, PlansToday: []Task{{Task: "cleaning", Point: 5}}},
-			{Day: 2, PlansToday: []Task{}},
-		},
-	}
-
-	c.JSON(http.StatusOK, response)
 }
 
 type AcceptRequest struct {
@@ -180,16 +134,16 @@ func checkGoal(c *gin.Context) {
 
 	c.JSON(http.StatusOK, response)
 }
-func getAdjustedPlans() []SuggestedPlan {
-	return []SuggestedPlan{
-		{Day: 1, PlansToday: []Task{{Task: "cleaning", Point: 5}}},
+func getAdjustedPlans() []models.SuggestedPlan {
+	return []models.SuggestedPlan{
+		{Day: 1, PlansToday: []models.Task{{Task: "cleaning", Point: 5}}},
 		// 他の日のプランも同様に追加
 	}
 }
 
 type AdjustmentResponse struct {
-	Message       string          `json:"message"`
-	AdjustedPlans []SuggestedPlan `json:"adjusted_plans"`
+	Message       string                 `json:"message"`
+	AdjustedPlans []models.SuggestedPlan `json:"adjusted_plans"`
 }
 
 // @Summary デイリープランが順調かどうかを確認するエンドポイント
@@ -226,8 +180,8 @@ type GetDailyPlansRequest struct {
 }
 
 type DailyPlansResponse struct {
-	Day        int    `json:"day"`
-	PlansToday []Task `json:"plans_today"`
+	Day        int           `json:"day"`
+	PlansToday []models.Task `json:"plans_today"`
 }
 
 // @Summary 指定された日のデイリープランを取得するエンドポイント
@@ -251,7 +205,7 @@ func getDailyPlansOld(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
 	response := DailyPlansResponse{
 		Day:        request.Day,
-		PlansToday: []Task{{Task: "cleaning", Point: 5}},
+		PlansToday: []models.Task{{Task: "cleaning", Point: 5}},
 	}
 
 	c.JSON(http.StatusOK, response)
@@ -283,7 +237,7 @@ func getDailyPlans(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
 	response := DailyPlansResponse{
 		Day:        day,
-		PlansToday: []Task{{Task: "cleaning", Point: 5}},
+		PlansToday: []models.Task{{Task: "cleaning", Point: 5}},
 	}
 
 	c.JSON(http.StatusOK, response)
