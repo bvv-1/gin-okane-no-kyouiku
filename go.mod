@@ -9,6 +9,8 @@ require (
 	github.com/swaggo/swag v1.16.2
 )
 
+require github.com/gin-contrib/cors v1.5.0
+
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/bytedance/sonic v1.10.2 // indirect
@@ -43,6 +45,7 @@ require (
 	golang.org/x/sys v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.16.1 // indirect
+	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // direct
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

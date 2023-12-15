@@ -1,4 +1,102 @@
-basePath: /api/v1
+basePath: /
+definitions:
+  httputil.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  main.AcceptRequest:
+    properties:
+      plans_ids_id:
+        type: integer
+      tasks_ids_id:
+        type: integer
+    type: object
+  main.AdjustmentResponse:
+    properties:
+      adjusted_plans:
+        items:
+          $ref: '#/definitions/main.SuggestedPlan'
+        type: array
+      message:
+        type: string
+    type: object
+  main.DailyPlansResponse:
+    properties:
+      day:
+        type: integer
+      plans_today:
+        items:
+          $ref: '#/definitions/main.Task'
+        type: array
+    type: object
+  main.GetDailyPlansRequest:
+    properties:
+      day:
+        type: integer
+    type: object
+  main.GoalResponse:
+    properties:
+      goal:
+        type: string
+      goal_points:
+        type: integer
+    type: object
+  main.OkResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  main.PointsResponse:
+    properties:
+      points:
+        type: integer
+    type: object
+  main.SubmitRequest:
+    properties:
+      day:
+        type: integer
+      total_points:
+        type: integer
+    type: object
+  main.SuggestRequest:
+    properties:
+      goal:
+        type: string
+      goal_points:
+        type: integer
+      tasks:
+        items:
+          $ref: '#/definitions/main.Task'
+        type: array
+    type: object
+  main.SuggestResponse:
+    properties:
+      plans:
+        items:
+          $ref: '#/definitions/main.SuggestedPlan'
+        type: array
+    type: object
+  main.SuggestedPlan:
+    properties:
+      day:
+        type: integer
+      plans_today:
+        items:
+          $ref: '#/definitions/main.Task'
+        type: array
+    type: object
+  main.Task:
+    properties:
+      point:
+        type: integer
+      task:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -8,22 +106,206 @@ info:
   title: okane no kyouiku API
   version: "1.0"
 paths:
-  /ping:
+  /:
     get:
       consumes:
       - application/json
-      description: 'Pingへのリクエストに対してJSON形式で{"message": "pong"}を返す'
-      operationId: ping
+      description: 'GETリクエストに対して{"message": "Hello, World!"}を返す'
+      operationId: helloWorld
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Pingのエンドポイント
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Hello Worldのエンドポイント
       tags:
-      - ping
+      - hello
+  /api/v1/goals:
+    get:
+      consumes:
+      - application/json
+      description: ユーザーの現在の目標を確認する
+      operationId: checkGoal
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.GoalResponse'
+      summary: 現在の目標を確認するエンドポイント
+      tags:
+      - goals
+  /api/v1/plans/accept:
+    post:
+      consumes:
+      - application/json
+      description: ユーザーが提案されたデイリープランを受け入れる
+      operationId: acceptSuggestedPlans
+      parameters:
+      - description: 受け入れリクエストのボディ
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.AcceptRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.OkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 提案されたデイリープランを受け入れるエンドポイント
+      tags:
+      - plans
+  /api/v1/plans/check:
+    get:
+      consumes:
+      - application/json
+      description: ユーザーのデイリープランが順調かどうかを確認する
+      operationId: checkProgress
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.AdjustmentResponse'
+      summary: デイリープランが順調かどうかを確認するエンドポイント
+      tags:
+      - plans
+  /api/v1/plans/submit:
+    post:
+      consumes:
+      - application/json
+      description: ユーザーがデイリータスクデータを提出する
+      operationId: submitDailyTasks
+      parameters:
+      - description: 提出リクエストのボディ
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.SubmitRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.OkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: デイリータスクデータを提出するエンドポイント
+      tags:
+      - submit
+  /api/v1/plans/today:
+    post:
+      consumes:
+      - application/json
+      description: ユーザーが指定した日のデイリープランを取得する
+      operationId: getDailyPlansOld
+      parameters:
+      - description: 取得する日の番号
+        in: body
+        name: day
+        required: true
+        schema:
+          $ref: '#/definitions/main.GetDailyPlansRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.DailyPlansResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 指定された日のデイリープランを取得するエンドポイント
+      tags:
+      - plans
+  /api/v1/points:
+    get:
+      consumes:
+      - application/json
+      description: ユーザーの現在のポイントを取得する
+      operationId: getUserPoints
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.PointsResponse'
+      summary: ユーザーのポイントを取得するエンドポイント
+      tags:
+      - points
+  /api/v2/plans/suggest:
+    post:
+      consumes:
+      - application/json
+      description: ユーザーが設定した目標とタスクに基づいて日々のお手伝いプランを生成する
+      operationId: suggestDailyPlans
+      parameters:
+      - description: 提案リクエストのボディ
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.SuggestRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.SuggestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 日々のお手伝いプランを生成するエンドポイント
+      tags:
+      - plans
+  /api/v2/plans/today:
+    get:
+      consumes:
+      - application/json
+      description: ユーザーが指定した日のデイリープランを取得する
+      operationId: getDailyPlans
+      parameters:
+      - description: 取得する日の番号
+        in: query
+        name: day
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.DailyPlansResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 指定された日のデイリープランを取得するエンドポイント
+      tags:
+      - plans
 swagger: "2.0"
