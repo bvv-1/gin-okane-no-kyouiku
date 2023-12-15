@@ -30,6 +30,7 @@ func main() {
 	r.GET("/api/v1/goals", checkGoal)
 	r.GET("/api/v1/plans/check", checkProgress)
 	r.GET("/api/v1/plans/today", getDailyPlans)
+	r.POST("/api/v1/submit", submitDailyTasks)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -237,5 +238,34 @@ func getDailyPlans(c *gin.Context) {
 		PlansToday: []Task{{Task: "cleaning", Point: 5}},
 	}
 
+	c.JSON(http.StatusOK, response)
+}
+
+type SubmitRequest struct {
+	Day         int `json:"day"`
+	TotalPoints int `json:"total_points"`
+}
+
+// @Summary デイリータスクデータを提出するエンドポイント
+// @Description ユーザーがデイリータスクデータを提出する
+// @ID submitDailyTasks
+// @Tags submit
+// @Accept json
+// @Produce json
+// @Param request body SubmitRequest true "提出リクエストのボディ"
+// @Success 200 {object} OkResponse
+// @Failure 400 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Router /api/v1/submit [post]
+func submitDailyTasks(c *gin.Context) {
+	var request SubmitRequest
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Invalid data format: %w", err).Error())
+		return
+	}
+
+	// モックデータを使用してレスポンスを生成
+	response := OkResponse{"Data received successfully"}
 	c.JSON(http.StatusOK, response)
 }

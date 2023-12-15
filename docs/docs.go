@@ -211,6 +211,53 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/submit": {
+            "post": {
+                "description": "ユーザーがデイリータスクデータを提出する",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "submit"
+                ],
+                "summary": "デイリータスクデータを提出するエンドポイント",
+                "operationId": "submitDailyTasks",
+                "parameters": [
+                    {
+                        "description": "提出リクエストのボディ",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.SubmitRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.OkResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -282,6 +329,17 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "main.SubmitRequest": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "integer"
+                },
+                "total_points": {
+                    "type": "integer"
                 }
             }
         },
