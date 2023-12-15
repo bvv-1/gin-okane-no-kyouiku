@@ -25,6 +25,15 @@ definitions:
       message:
         type: string
     type: object
+  main.DailyPlansResponse:
+    properties:
+      day:
+        type: integer
+      plans_today:
+        items:
+          $ref: '#/definitions/main.Task'
+        type: array
+    type: object
   main.GoalResponse:
     properties:
       goal:
@@ -180,6 +189,32 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: 日々のお手伝いプランを生成するエンドポイント
+      tags:
+      - plans
+  /api/v1/plans/today:
+    get:
+      consumes:
+      - application/json
+      description: ユーザーが指定した日のデイリープランを取得する
+      operationId: getDailyPlans
+      parameters:
+      - description: 取得する日の番号
+        in: query
+        name: day
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.DailyPlansResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 指定された日のデイリープランを取得するエンドポイント
       tags:
       - plans
 swagger: "2.0"

@@ -172,6 +172,45 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v1/plans/today": {
+            "get": {
+                "description": "ユーザーが指定した日のデイリープランを取得する",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plans"
+                ],
+                "summary": "指定された日のデイリープランを取得するエンドポイント",
+                "operationId": "getDailyPlans",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "取得する日の番号",
+                        "name": "day",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.DailyPlansResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -210,6 +249,20 @@ const docTemplate = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "main.DailyPlansResponse": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "integer"
+                },
+                "plans_today": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.Task"
+                    }
                 }
             }
         },
