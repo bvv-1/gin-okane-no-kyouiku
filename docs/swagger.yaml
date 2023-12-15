@@ -21,6 +21,13 @@ definitions:
       message:
         type: string
     type: object
+  main.GoalResponse:
+    properties:
+      goal:
+        type: string
+      goal_points:
+        type: integer
+    type: object
   main.SuggestRequest:
     properties:
       goal:
@@ -80,6 +87,22 @@ paths:
       summary: Hello Worldのエンドポイント
       tags:
       - hello
+  /api/v1/goals:
+    get:
+      consumes:
+      - application/json
+      description: ユーザーの現在の目標を確認する
+      operationId: checkGoal
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.GoalResponse'
+      summary: 現在の目標を確認するエンドポイント
+      tags:
+      - goals
   /api/v1/plans/accept:
     post:
       consumes:

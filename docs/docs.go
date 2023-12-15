@@ -43,6 +43,30 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/goals": {
+            "get": {
+                "description": "ユーザーの現在の目標を確認する",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goals"
+                ],
+                "summary": "現在の目標を確認するエンドポイント",
+                "operationId": "checkGoal",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.GoalResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/plans/accept": {
             "post": {
                 "description": "ユーザーが提案されたデイリープランを受け入れる",
@@ -156,6 +180,17 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "main.GoalResponse": {
+            "type": "object",
+            "properties": {
+                "goal": {
+                    "type": "string"
+                },
+                "goal_points": {
+                    "type": "integer"
                 }
             }
         },

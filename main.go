@@ -25,6 +25,7 @@ func main() {
 	r.GET("/", helloWorld)
 	r.POST("/api/v1/plans/suggest", suggestDailyPlans)
 	r.POST("/api/v1/plans/accept", acceptSuggestedPlans)
+	r.GET("/api/v1/goals", checkGoal)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -130,6 +131,29 @@ func acceptSuggestedPlans(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
 	response := AcceptResponse{
 		Message: "Plan accepted",
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+type GoalResponse struct {
+	Goal       string `json:"goal"`
+	GoalPoints int    `json:"goal_points"`
+}
+
+// @Summary 現在の目標を確認するエンドポイント
+// @Description ユーザーの現在の目標を確認する
+// @ID checkGoal
+// @Tags goals
+// @Accept json
+// @Produce json
+// @Success 200 {object} GoalResponse
+// @Router /api/v1/goals [get]
+func checkGoal(c *gin.Context) {
+	// モックデータを使用してレスポンスを生成
+	response := GoalResponse{
+		Goal:       "computer",
+		GoalPoints: 100,
 	}
 
 	c.JSON(http.StatusOK, response)
