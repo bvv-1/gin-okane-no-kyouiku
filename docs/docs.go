@@ -212,6 +212,30 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/points": {
+            "get": {
+                "description": "ユーザーの現在のポイントを取得する",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "points"
+                ],
+                "summary": "ユーザーのポイントを取得するエンドポイント",
+                "operationId": "getUserPoints",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.PointsResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/submit": {
             "post": {
                 "description": "ユーザーがデイリータスクデータを提出する",
@@ -329,6 +353,14 @@ const docTemplate = `{
             "properties": {
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "main.PointsResponse": {
+            "type": "object",
+            "properties": {
+                "points": {
+                    "type": "integer"
                 }
             }
         },

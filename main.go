@@ -31,6 +31,7 @@ func main() {
 	r.GET("/api/v1/plans/check", checkProgress)
 	r.GET("/api/v1/plans/today", getDailyPlans)
 	r.POST("/api/v1/submit", submitDailyTasks)
+	r.GET("/api/v1/points", getUserPoints)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -267,5 +268,26 @@ func submitDailyTasks(c *gin.Context) {
 
 	// モックデータを使用してレスポンスを生成
 	response := OkResponse{"Data received successfully"}
+	c.JSON(http.StatusOK, response)
+}
+
+type PointsResponse struct {
+	Points int `json:"points"`
+}
+
+// @Summary ユーザーのポイントを取得するエンドポイント
+// @Description ユーザーの現在のポイントを取得する
+// @ID getUserPoints
+// @Tags points
+// @Accept json
+// @Produce json
+// @Success 200 {object} PointsResponse
+// @Router /api/v1/points [get]
+func getUserPoints(c *gin.Context) {
+	// モックデータを使用してレスポンスを生成
+	response := PointsResponse{
+		Points: 88,
+	}
+
 	c.JSON(http.StatusOK, response)
 }

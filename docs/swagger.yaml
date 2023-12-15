@@ -46,6 +46,11 @@ definitions:
       message:
         type: string
     type: object
+  main.PointsResponse:
+    properties:
+      points:
+        type: integer
+    type: object
   main.SubmitRequest:
     properties:
       day:
@@ -224,6 +229,22 @@ paths:
       summary: 指定された日のデイリープランを取得するエンドポイント
       tags:
       - plans
+  /api/v1/points:
+    get:
+      consumes:
+      - application/json
+      description: ユーザーの現在のポイントを取得する
+      operationId: getUserPoints
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.PointsResponse'
+      summary: ユーザーのポイントを取得するエンドポイント
+      tags:
+      - points
   /api/v1/submit:
     post:
       consumes:
