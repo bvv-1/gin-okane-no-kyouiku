@@ -208,7 +208,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.DailyPlansResponse"
+                            "$ref": "#/definitions/models.DailyPlansResponse"
                         }
                     },
                     "400": {
@@ -298,7 +298,7 @@ const docTemplate = `{
                     "plans"
                 ],
                 "summary": "指定された日のデイリープランを取得するエンドポイント",
-                "operationId": "getDailyPlans",
+                "operationId": "GetTodayPlans",
                 "parameters": [
                     {
                         "type": "integer",
@@ -312,7 +312,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.DailyPlansResponse"
+                            "$ref": "#/definitions/models.DailyPlansResponse"
                         }
                     },
                     "400": {
@@ -392,20 +392,6 @@ const docTemplate = `{
                 }
             }
         },
-        "main.DailyPlansResponse": {
-            "type": "object",
-            "properties": {
-                "day": {
-                    "type": "integer"
-                },
-                "plans_today": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Task"
-                    }
-                }
-            }
-        },
         "main.GetDailyPlansRequest": {
             "type": "object",
             "properties": {
@@ -449,6 +435,20 @@ const docTemplate = `{
                 },
                 "total_points": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.DailyPlansResponse": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "integer"
+                },
+                "plans_today": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Task"
+                    }
                 }
             }
         },

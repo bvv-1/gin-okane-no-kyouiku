@@ -3,6 +3,7 @@ package controllers
 import (
 	"gin-okane-no-kyouiku/models"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/xerrors"
@@ -42,6 +43,38 @@ func SuggestDailyPlans(c *gin.Context) {
 			{Day: 1, PlansToday: []models.Task{{Task: "cleaning", Point: 5}}},
 			{Day: 2, PlansToday: []models.Task{}},
 		},
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+// @Summary 指定された日のデイリープランを取得するエンドポイント
+// @Description ユーザーが指定した日のデイリープランを取得する
+// @ID GetTodayPlans
+// @Tags plans
+// @Accept json
+// @Produce json
+// @Param day query int true "取得する日の番号"
+// @Success 200 {object} models.DailyPlansResponse
+// @Failure 400 {object} httputil.HTTPError
+// @Router /api/v2/plans/today [get]
+func GetTodayPlans(c *gin.Context) {
+	dayStr, ok := c.GetQuery("day")
+	if !ok {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Query parameter 'day' is required").Error())
+		return
+	}
+
+	day, err := strconv.Atoi(dayStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Invalid data format: %w", err).Error())
+		return
+	}
+
+	// モックデータを使用してレスポンスを生成
+	response := models.DailyPlansResponse{
+		Day:        day,
+		PlansToday: []models.Task{{Task: "cleaning", Point: 5}},
 	}
 
 	c.JSON(http.StatusOK, response)

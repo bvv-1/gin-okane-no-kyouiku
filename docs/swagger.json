@@ -201,7 +201,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.DailyPlansResponse"
+                            "$ref": "#/definitions/models.DailyPlansResponse"
                         }
                     },
                     "400": {
@@ -291,7 +291,7 @@
                     "plans"
                 ],
                 "summary": "指定された日のデイリープランを取得するエンドポイント",
-                "operationId": "getDailyPlans",
+                "operationId": "GetTodayPlans",
                 "parameters": [
                     {
                         "type": "integer",
@@ -305,7 +305,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.DailyPlansResponse"
+                            "$ref": "#/definitions/models.DailyPlansResponse"
                         }
                     },
                     "400": {
@@ -385,20 +385,6 @@
                 }
             }
         },
-        "main.DailyPlansResponse": {
-            "type": "object",
-            "properties": {
-                "day": {
-                    "type": "integer"
-                },
-                "plans_today": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Task"
-                    }
-                }
-            }
-        },
         "main.GetDailyPlansRequest": {
             "type": "object",
             "properties": {
@@ -442,6 +428,20 @@
                 },
                 "total_points": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.DailyPlansResponse": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "integer"
+                },
+                "plans_today": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Task"
+                    }
                 }
             }
         },

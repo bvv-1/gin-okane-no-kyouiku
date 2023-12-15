@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 
-	"strconv"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -42,14 +41,32 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	// - GET /api/v1/goals: 設定したゴールを返す
+	// - POST /api/v1/goals: ゴールとタスクの情報を受け取って、DBにセットする
+	// - GET /api/v1/plans/suggested: DBのゴールとタスクの情報から、お手伝いプランを提案する
+	// - PUT /api/v1/plans/suggested: 提案をacceptするならプランIDとタスクIDの情報を受け取って、お手伝いプランをin progress状態に設定する
+	// - GET /api/v1/goals/progress: 設定したゴールと、溜まったポイントと、on trackかどうかを返す
+	// - GET /api/v1/plans: 設定したプランを返す
+	// - GET /api/v1/plans/today: 設定したプランのうち、本日のプランを返す
+	// - POST ??: 本日のプランの達成状況をDBにセットする
+
 	r.GET("/", helloWorld)
-	r.POST("/api/v2/plans/suggest", controllers.SuggestDailyPlans)
-	r.POST("/api/v1/plans/accept", acceptSuggestedPlans)
+	// r.GET("/api/v2/goals", controllers.GetGoal)
+	// r.POST("/api/v1/goals", controllers.SetGoal)
+	// r.GET("/api/v1/plans/suggested", controllers.GetSuggestedPlans)
+	// r.PUT("/api/v1/plans/suggested", controllers.AcceptSuggestedPlans)
+	// r.GET("/api/v1/goals/progress", controllers.CheckProgress)
+	// r.GET("/api/v1/plans", controllers.GetPlans)
+	// r.GET("/api/v2/plans/today", controllers.GetTodayPlans)
+	// r.POST("/api/v1/plans/today", controllers.SetTodayPlans)
+
+	r.POST("/api/v2/plans/suggest", controllers.SuggestDailyPlans) // 動詞を入れない
+	r.POST("/api/v1/plans/accept", acceptSuggestedPlans)           // 動詞を入れない
 	r.GET("/api/v1/goals", checkGoal)
-	r.GET("/api/v1/plans/check", checkProgress)
+	r.GET("/api/v1/plans/check", checkProgress) // 動詞を入れない
 	r.POST("/api/v1/plans/today", getDailyPlansOld)
-	r.GET("/api/v2/plans/today", getDailyPlans)
-	r.POST("/api/v1/plans/submit", submitDailyTasks)
+	r.GET("/api/v2/plans/today", controllers.GetTodayPlans)
+	r.POST("/api/v1/plans/submit", submitDailyTasks) // 動詞を入れない, せめて名詞
 	r.GET("/api/v1/points", getUserPoints)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -179,11 +196,6 @@ type GetDailyPlansRequest struct {
 	Day int `json:"day"`
 }
 
-type DailyPlansResponse struct {
-	Day        int           `json:"day"`
-	PlansToday []models.Task `json:"plans_today"`
-}
-
 // @Summary 指定された日のデイリープランを取得するエンドポイント
 // @Description ユーザーが指定した日のデイリープランを取得する
 // @ID getDailyPlansOld
@@ -191,7 +203,7 @@ type DailyPlansResponse struct {
 // @Accept json
 // @Produce json
 // @Param day body GetDailyPlansRequest true "取得する日の番号"
-// @Success 200 {object} DailyPlansResponse
+// @Success 200 {object} models.DailyPlansResponse
 // @Failure 400 {object} httputil.HTTPError
 // @Router /api/v1/plans/today [post]
 func getDailyPlansOld(c *gin.Context) {
@@ -203,40 +215,8 @@ func getDailyPlansOld(c *gin.Context) {
 	}
 
 	// モックデータを使用してレスポンスを生成
-	response := DailyPlansResponse{
+	response := models.DailyPlansResponse{
 		Day:        request.Day,
-		PlansToday: []models.Task{{Task: "cleaning", Point: 5}},
-	}
-
-	c.JSON(http.StatusOK, response)
-}
-
-// @Summary 指定された日のデイリープランを取得するエンドポイント
-// @Description ユーザーが指定した日のデイリープランを取得する
-// @ID getDailyPlans
-// @Tags plans
-// @Accept json
-// @Produce json
-// @Param day query int true "取得する日の番号"
-// @Success 200 {object} DailyPlansResponse
-// @Failure 400 {object} httputil.HTTPError
-// @Router /api/v2/plans/today [get]
-func getDailyPlans(c *gin.Context) {
-	dayStr, ok := c.GetQuery("day")
-	if !ok {
-		c.JSON(http.StatusBadRequest, xerrors.Errorf("Query parameter 'day' is required").Error())
-		return
-	}
-
-	day, err := strconv.Atoi(dayStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, xerrors.Errorf("Invalid data format: %w", err).Error())
-		return
-	}
-
-	// モックデータを使用してレスポンスを生成
-	response := DailyPlansResponse{
-		Day:        day,
 		PlansToday: []models.Task{{Task: "cleaning", Point: 5}},
 	}
 
