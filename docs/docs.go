@@ -37,10 +37,48 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/plans/accept": {
+            "post": {
+                "description": "ユーザーが提案されたデイリープランを受け入れる",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plans"
+                ],
+                "summary": "提案されたデイリープランを受け入れるエンドポイント",
+                "operationId": "acceptSuggestedPlans",
+                "parameters": [
+                    {
+                        "description": "受け入れリクエストのボディ",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.AcceptRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.AcceptResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
                         }
                     }
                 }
@@ -81,10 +119,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/httputil.HTTPError"
                         }
                     }
                 }
@@ -92,6 +127,38 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "httputil.HTTPError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 400
+                },
+                "message": {
+                    "type": "string",
+                    "example": "status bad request"
+                }
+            }
+        },
+        "main.AcceptRequest": {
+            "type": "object",
+            "properties": {
+                "plans_ids_id": {
+                    "type": "integer"
+                },
+                "tasks_ids_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "main.AcceptResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "main.SuggestRequest": {
             "type": "object",
             "properties": {
@@ -152,7 +219,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "localhost:8080",
-	BasePath:         "/api/v1",
+	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "okane no kyouiku API",
 	Description:      "",

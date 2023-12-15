@@ -18,12 +18,13 @@ import (
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 //
 // @host localhost:8080
-// @BasePath /api/v1
+// @BasePath /
 func main() {
 	r := gin.Default()
 
 	r.GET("/", helloWorld)
 	r.POST("/api/v1/plans/suggest", suggestDailyPlans)
+	r.POST("/api/v1/plans/accept", acceptSuggestedPlans)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -37,7 +38,7 @@ func main() {
 // @Tags hello
 // @Accept json
 // @Produce json
-// @Success 200 {object} map[string]string
+// @Success 200 {object} httputil.HTTPError
 // @Router / [get]
 func helloWorld(c *gin.Context) {
 	data := map[string]string{"message": "Hello, World!"}
@@ -72,7 +73,7 @@ type SuggestResponse struct {
 // @Produce json
 // @Param request body SuggestRequest true "提案リクエストのボディ"
 // @Success 200 {object} SuggestResponse
-// @Failure 400 {object} map[string]string
+// @Failure 400 {object} httputil.HTTPError
 // @Router /api/v1/plans/suggest [post]
 func suggestDailyPlans(c *gin.Context) {
 	var request SuggestRequest
@@ -88,6 +89,47 @@ func suggestDailyPlans(c *gin.Context) {
 			{Day: 1, PlansToday: []Task{{Task: "cleaning", Point: 5}}},
 			{Day: 2, PlansToday: []Task{}},
 		},
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+type AcceptRequest struct {
+	PlanID int `json:"plans_ids_id"`
+	TaskID int `json:"tasks_ids_id"`
+}
+
+type AcceptResponse struct {
+	Message string `json:"message"`
+}
+
+type HTTPError struct {
+	Code         int
+	WrappedError error
+}
+
+// AcceptSuggestedPlans godoc
+// @Summary 提案されたデイリープランを受け入れるエンドポイント
+// @Description ユーザーが提案されたデイリープランを受け入れる
+// @ID acceptSuggestedPlans
+// @Tags plans
+// @Accept json
+// @Produce json
+// @Param request body AcceptRequest true "受け入れリクエストのボディ"
+// @Success 200 {object} AcceptResponse
+// @Failure 400 {object} httputil.HTTPError
+// @Router /api/v1/plans/accept [post]
+func acceptSuggestedPlans(c *gin.Context) {
+	var request AcceptRequest
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": xerrors.Errorf("Invalid data format: %w", err).Error()})
+		return
+	}
+
+	// モックデータを使用してレスポンスを生成
+	response := AcceptResponse{
+		Message: "Plan accepted",
 	}
 
 	c.JSON(http.StatusOK, response)

@@ -1,5 +1,26 @@
-basePath: /api/v1
+basePath: /
 definitions:
+  httputil.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  main.AcceptRequest:
+    properties:
+      plans_ids_id:
+        type: integer
+      tasks_ids_id:
+        type: integer
+    type: object
+  main.AcceptResponse:
+    properties:
+      message:
+        type: string
+    type: object
   main.SuggestRequest:
     properties:
       goal:
@@ -55,12 +76,37 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/httputil.HTTPError'
       summary: Hello Worldのエンドポイント
       tags:
       - hello
+  /api/v1/plans/accept:
+    post:
+      consumes:
+      - application/json
+      description: ユーザーが提案されたデイリープランを受け入れる
+      operationId: acceptSuggestedPlans
+      parameters:
+      - description: 受け入れリクエストのボディ
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.AcceptRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.AcceptResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 提案されたデイリープランを受け入れるエンドポイント
+      tags:
+      - plans
   /api/v1/plans/suggest:
     post:
       consumes:
@@ -84,9 +130,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/httputil.HTTPError'
       summary: 日々のお手伝いプランを生成するエンドポイント
       tags:
       - plans
