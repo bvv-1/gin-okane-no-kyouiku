@@ -26,6 +26,7 @@ func main() {
 	r.POST("/api/v1/plans/suggest", suggestDailyPlans)
 	r.POST("/api/v1/plans/accept", acceptSuggestedPlans)
 	r.GET("/api/v1/goals", checkGoal)
+	r.GET("/api/v1/plans/check", checkProgress)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -100,7 +101,7 @@ type AcceptRequest struct {
 	TaskID int `json:"tasks_ids_id"`
 }
 
-type AcceptResponse struct {
+type OkResponse struct {
 	Message string `json:"message"`
 }
 
@@ -117,7 +118,7 @@ type HTTPError struct {
 // @Accept json
 // @Produce json
 // @Param request body AcceptRequest true "受け入れリクエストのボディ"
-// @Success 200 {object} AcceptResponse
+// @Success 200 {object} OkResponse
 // @Failure 400 {object} httputil.HTTPError
 // @Router /api/v1/plans/accept [post]
 func acceptSuggestedPlans(c *gin.Context) {
@@ -129,7 +130,7 @@ func acceptSuggestedPlans(c *gin.Context) {
 	}
 
 	// モックデータを使用してレスポンスを生成
-	response := AcceptResponse{
+	response := OkResponse{
 		Message: "Plan accepted",
 	}
 
@@ -157,4 +158,44 @@ func checkGoal(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
+}
+func getAdjustedPlans() []SuggestedPlan {
+	return []SuggestedPlan{
+		{Day: 1, PlansToday: []Task{{Task: "cleaning", Point: 5}}},
+		// 他の日のプランも同様に追加
+	}
+}
+
+type AdjustmentResponse struct {
+	Message       string          `json:"message"`
+	AdjustedPlans []SuggestedPlan `json:"adjusted_plans"`
+}
+
+// @Summary デイリープランが順調かどうかを確認するエンドポイント
+// @Description ユーザーのデイリープランが順調かどうかを確認する
+// @ID checkProgress
+// @Tags plans
+// @Accept json
+// @Produce json
+// @Success 200 {object} OkResponse
+// @Success 200 {object} AdjustmentResponse
+// @Router /api/v1/plans/check [get]
+func checkProgress(c *gin.Context) {
+	// モックデータを使用してレスポンスを生成
+	isOnTrack := true
+
+	if isOnTrack {
+		// デイリープランが順調な場合のレスポンス
+		okResponse := OkResponse{
+			Message: "Plans are on track",
+		}
+		c.JSON(http.StatusOK, okResponse)
+	} else {
+		// デイリープランが調整が必要な場合のレスポンス
+		adjustmentResponse := AdjustmentResponse{
+			Message:       "Plans need adjustment",
+			AdjustedPlans: getAdjustedPlans(),
+		}
+		c.JSON(http.StatusOK, adjustmentResponse)
+	}
 }

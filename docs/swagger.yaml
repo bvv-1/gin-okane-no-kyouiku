@@ -16,8 +16,12 @@ definitions:
       tasks_ids_id:
         type: integer
     type: object
-  main.AcceptResponse:
+  main.AdjustmentResponse:
     properties:
+      adjusted_plans:
+        items:
+          $ref: '#/definitions/main.SuggestedPlan'
+        type: array
       message:
         type: string
     type: object
@@ -27,6 +31,11 @@ definitions:
         type: string
       goal_points:
         type: integer
+    type: object
+  main.OkResponse:
+    properties:
+      message:
+        type: string
     type: object
   main.SuggestRequest:
     properties:
@@ -122,12 +131,28 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.AcceptResponse'
+            $ref: '#/definitions/main.OkResponse'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: 提案されたデイリープランを受け入れるエンドポイント
+      tags:
+      - plans
+  /api/v1/plans/check:
+    get:
+      consumes:
+      - application/json
+      description: ユーザーのデイリープランが順調かどうかを確認する
+      operationId: checkProgress
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.AdjustmentResponse'
+      summary: デイリープランが順調かどうかを確認するエンドポイント
       tags:
       - plans
   /api/v1/plans/suggest:

@@ -96,13 +96,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.AcceptResponse"
+                            "$ref": "#/definitions/main.OkResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/plans/check": {
+            "get": {
+                "description": "ユーザーのデイリープランが順調かどうかを確認する",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plans"
+                ],
+                "summary": "デイリープランが順調かどうかを確認するエンドポイント",
+                "operationId": "checkProgress",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.AdjustmentResponse"
                         }
                     }
                 }
@@ -175,9 +199,15 @@ const docTemplate = `{
                 }
             }
         },
-        "main.AcceptResponse": {
+        "main.AdjustmentResponse": {
             "type": "object",
             "properties": {
+                "adjusted_plans": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.SuggestedPlan"
+                    }
+                },
                 "message": {
                     "type": "string"
                 }
@@ -191,6 +221,14 @@ const docTemplate = `{
                 },
                 "goal_points": {
                     "type": "integer"
+                }
+            }
+        },
+        "main.OkResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         },
