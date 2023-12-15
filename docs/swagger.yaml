@@ -34,6 +34,11 @@ definitions:
           $ref: '#/definitions/main.Task'
         type: array
     type: object
+  main.GetDailyPlansRequest:
+    properties:
+      day:
+        type: integer
+    type: object
   main.GoalResponse:
     properties:
       goal:
@@ -176,45 +181,19 @@ paths:
       summary: デイリープランが順調かどうかを確認するエンドポイント
       tags:
       - plans
-  /api/v1/plans/suggest:
+  /api/v1/plans/today:
     post:
       consumes:
       - application/json
-      description: ユーザーが設定した目標とタスクに基づいて日々のお手伝いプランを生成する
-      operationId: suggestDailyPlans
-      parameters:
-      - description: 提案リクエストのボディ
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/main.SuggestRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.SuggestResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-      summary: 日々のお手伝いプランを生成するエンドポイント
-      tags:
-      - plans
-  /api/v1/plans/today:
-    get:
-      consumes:
-      - application/json
       description: ユーザーが指定した日のデイリープランを取得する
-      operationId: getDailyPlans
+      operationId: getDailyPlansOld
       parameters:
       - description: 取得する日の番号
-        in: query
+        in: body
         name: day
         required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/main.GetDailyPlansRequest'
       produces:
       - application/json
       responses:
@@ -276,4 +255,57 @@ paths:
       summary: デイリータスクデータを提出するエンドポイント
       tags:
       - submit
+  /api/v2/plans/suggest:
+    post:
+      consumes:
+      - application/json
+      description: ユーザーが設定した目標とタスクに基づいて日々のお手伝いプランを生成する
+      operationId: suggestDailyPlans
+      parameters:
+      - description: 提案リクエストのボディ
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.SuggestRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.SuggestResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 日々のお手伝いプランを生成するエンドポイント
+      tags:
+      - plans
+  /api/v2/plans/today:
+    get:
+      consumes:
+      - application/json
+      description: ユーザーが指定した日のデイリープランを取得する
+      operationId: getDailyPlans
+      parameters:
+      - description: 取得する日の番号
+        in: query
+        name: day
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.DailyPlansResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 指定された日のデイリープランを取得するエンドポイント
+      tags:
+      - plans
 swagger: "2.0"

@@ -25,11 +25,12 @@ func main() {
 	r := gin.Default()
 
 	r.GET("/", helloWorld)
-	r.POST("/api/v1/plans/suggest", suggestDailyPlans)
+	r.POST("/api/v2/plans/suggest", suggestDailyPlans)
 	r.POST("/api/v1/plans/accept", acceptSuggestedPlans)
 	r.GET("/api/v1/goals", checkGoal)
 	r.GET("/api/v1/plans/check", checkProgress)
-	r.GET("/api/v1/plans/today", getDailyPlans)
+	r.POST("/api/v1/plans/today", getDailyPlansOld)
+	r.GET("/api/v2/plans/today", getDailyPlans)
 	r.POST("/api/v1/submit", submitDailyTasks)
 	r.GET("/api/v1/points", getUserPoints)
 
@@ -81,7 +82,7 @@ type SuggestResponse struct {
 // @Param request body SuggestRequest true "提案リクエストのボディ"
 // @Success 200 {object} SuggestResponse
 // @Failure 400 {object} httputil.HTTPError
-// @Router /api/v1/plans/suggest [post]
+// @Router /api/v2/plans/suggest [post]
 func suggestDailyPlans(c *gin.Context) {
 	var request SuggestRequest
 
@@ -205,9 +206,40 @@ func checkProgress(c *gin.Context) {
 	}
 }
 
+type GetDailyPlansRequest struct {
+	Day int `json:"day"`
+}
+
 type DailyPlansResponse struct {
 	Day        int    `json:"day"`
 	PlansToday []Task `json:"plans_today"`
+}
+
+// @Summary 指定された日のデイリープランを取得するエンドポイント
+// @Description ユーザーが指定した日のデイリープランを取得する
+// @ID getDailyPlansOld
+// @Tags plans
+// @Accept json
+// @Produce json
+// @Param day body GetDailyPlansRequest true "取得する日の番号"
+// @Success 200 {object} DailyPlansResponse
+// @Failure 400 {object} httputil.HTTPError
+// @Router /api/v1/plans/today [post]
+func getDailyPlansOld(c *gin.Context) {
+	var request GetDailyPlansRequest
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Invalid data format: %w", err).Error())
+		return
+	}
+
+	// モックデータを使用してレスポンスを生成
+	response := DailyPlansResponse{
+		Day:        request.Day,
+		PlansToday: []Task{{Task: "cleaning", Point: 5}},
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 // @Summary 指定された日のデイリープランを取得するエンドポイント
@@ -219,7 +251,7 @@ type DailyPlansResponse struct {
 // @Param day query int true "取得する日の番号"
 // @Success 200 {object} DailyPlansResponse
 // @Failure 400 {object} httputil.HTTPError
-// @Router /api/v1/plans/today [get]
+// @Router /api/v2/plans/today [get]
 func getDailyPlans(c *gin.Context) {
 	dayStr, ok := c.GetQuery("day")
 	if !ok {

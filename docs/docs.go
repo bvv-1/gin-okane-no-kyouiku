@@ -132,49 +132,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/plans/suggest": {
-            "post": {
-                "description": "ユーザーが設定した目標とタスクに基づいて日々のお手伝いプランを生成する",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "plans"
-                ],
-                "summary": "日々のお手伝いプランを生成するエンドポイント",
-                "operationId": "suggestDailyPlans",
-                "parameters": [
-                    {
-                        "description": "提案リクエストのボディ",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/main.SuggestRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/main.SuggestResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/plans/today": {
-            "get": {
+            "post": {
                 "description": "ユーザーが指定した日のデイリープランを取得する",
                 "consumes": [
                     "application/json"
@@ -186,14 +145,16 @@ const docTemplate = `{
                     "plans"
                 ],
                 "summary": "指定された日のデイリープランを取得するエンドポイント",
-                "operationId": "getDailyPlans",
+                "operationId": "getDailyPlansOld",
                 "parameters": [
                     {
-                        "type": "integer",
                         "description": "取得する日の番号",
                         "name": "day",
-                        "in": "query",
-                        "required": true
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.GetDailyPlansRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -282,6 +243,86 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v2/plans/suggest": {
+            "post": {
+                "description": "ユーザーが設定した目標とタスクに基づいて日々のお手伝いプランを生成する",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plans"
+                ],
+                "summary": "日々のお手伝いプランを生成するエンドポイント",
+                "operationId": "suggestDailyPlans",
+                "parameters": [
+                    {
+                        "description": "提案リクエストのボディ",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.SuggestRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.SuggestResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v2/plans/today": {
+            "get": {
+                "description": "ユーザーが指定した日のデイリープランを取得する",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plans"
+                ],
+                "summary": "指定された日のデイリープランを取得するエンドポイント",
+                "operationId": "getDailyPlans",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "取得する日の番号",
+                        "name": "day",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.DailyPlansResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -334,6 +375,14 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/main.Task"
                     }
+                }
+            }
+        },
+        "main.GetDailyPlansRequest": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "integer"
                 }
             }
         },
