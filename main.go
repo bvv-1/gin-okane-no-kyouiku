@@ -3,17 +3,32 @@ package main
 import (
 	"net/http"
 
+	_ "gin-okane-no-kyouiku/docs"
+
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var db = make(map[string]string)
 
-func setupRouter() *gin.Engine {
-	// Disable Console Color
-	// gin.DisableConsoleColor()
+// @title           Swagger Example API
+// @version         1.0
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:8080
+// @BasePath  /api/v1
+func main() {
 	r := gin.Default()
 
-	// Ping test
+	// @Summary Pingのエンドポイント
+	// @Description Pingへのリクエストに対して"pong"を返す
+	// @ID ping
+	// @Produce  plain
+	// @Success 200 {string} string "pong"
+	// @Router /ping [get]
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
@@ -64,10 +79,6 @@ func setupRouter() *gin.Engine {
 		}
 	})
 
-	return r
-}
-
-func main() {
-	r := setupRouter()
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.Run(":8080")
 }
