@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "Swagger Example API",
+        "title": "okane no kyouiku API",
         "contact": {},
         "license": {
             "name": "Apache 2.0",
@@ -11,5 +11,33 @@
     },
     "host": "localhost:8080",
     "basePath": "/api/v1",
-    "paths": {}
+    "paths": {
+        "/ping": {
+            "get": {
+                "description": "Pingへのリクエストに対してJSON形式で{\"message\": \"pong\"}を返す",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ping"
+                ],
+                "summary": "Pingのエンドポイント",
+                "operationId": "ping",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

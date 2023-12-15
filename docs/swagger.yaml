@@ -5,7 +5,25 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Swagger Example API
+  title: okane no kyouiku API
   version: "1.0"
-paths: {}
+paths:
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: 'Pingへのリクエストに対してJSON形式で{"message": "pong"}を返す'
+      operationId: ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Pingのエンドポイント
+      tags:
+      - ping
 swagger: "2.0"
