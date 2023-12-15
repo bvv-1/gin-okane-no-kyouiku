@@ -8,6 +8,24 @@ info:
   title: okane no kyouiku API
   version: "1.0"
 paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      description: 'GETリクエストに対して{"message": "Hello, World!"}を返す'
+      operationId: helloWorld
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Hello Worldのエンドポイント
+      tags:
+      - hello
   /ping:
     get:
       consumes:

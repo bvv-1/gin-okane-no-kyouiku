@@ -20,22 +20,23 @@ import (
 func main() {
 	r := gin.Default()
 
-	r.GET("/ping", ping)
+	r.GET("/", helloWorld)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	r.Run(":8080")
 }
 
-// GetPong godoc
-// @Summary Pingのエンドポイント
-// @Description Pingへのリクエストに対してJSON形式で{"message": "pong"}を返す
-// @ID ping
-// @Tags ping
+// helloWorld godoc
+// @Summary Hello Worldのエンドポイント
+// @Description GETリクエストに対して{"message": "Hello, World!"}を返す
+// @ID helloWorld
+// @Tags hello
 // @Accept json
 // @Produce json
 // @Success 200 {object} map[string]string
-// @Router /ping [get]
-func ping(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"message": "pong"})
+// @Router / [get]
+func helloWorld(c *gin.Context) {
+	data := map[string]string{"message": "Hello, World!"}
+	c.JSON(http.StatusOK, data)
 }
