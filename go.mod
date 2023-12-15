@@ -9,6 +9,8 @@ require (
 	github.com/swaggo/swag v1.16.2
 )
 
+require github.com/gin-contrib/cors v1.5.0
+
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/bytedance/sonic v1.10.2 // indirect

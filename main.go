@@ -4,6 +4,9 @@ import (
 	"net/http"
 
 	"strconv"
+	"time"
+
+	"github.com/gin-contrib/cors"
 
 	"golang.org/x/xerrors"
 
@@ -24,6 +27,18 @@ import (
 func main() {
 	r := gin.Default()
 
+	r.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"http://localhost:5173", "https://okane-no-kyouiku.onrender.com"},
+		AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders: []string{
+			"Origin",
+			"Content-Type",
+			"Authorization",
+		},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
+
 	r.GET("/", helloWorld)
 	r.POST("/api/v2/plans/suggest", suggestDailyPlans)
 	r.POST("/api/v1/plans/accept", acceptSuggestedPlans)
@@ -31,7 +46,7 @@ func main() {
 	r.GET("/api/v1/plans/check", checkProgress)
 	r.POST("/api/v1/plans/today", getDailyPlansOld)
 	r.GET("/api/v2/plans/today", getDailyPlans)
-	r.POST("/api/v1/submit", submitDailyTasks)
+	r.POST("/api/v1/plans/submit", submitDailyTasks)
 	r.GET("/api/v1/points", getUserPoints)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -289,7 +304,7 @@ type SubmitRequest struct {
 // @Success 200 {object} OkResponse
 // @Failure 400 {object} httputil.HTTPError
 // @Failure 500 {object} httputil.HTTPError
-// @Router /api/v1/submit [post]
+// @Router /api/v1/plans/submit [post]
 func submitDailyTasks(c *gin.Context) {
 	var request SubmitRequest
 

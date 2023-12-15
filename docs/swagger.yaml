@@ -181,6 +181,37 @@ paths:
       summary: デイリープランが順調かどうかを確認するエンドポイント
       tags:
       - plans
+  /api/v1/plans/submit:
+    post:
+      consumes:
+      - application/json
+      description: ユーザーがデイリータスクデータを提出する
+      operationId: submitDailyTasks
+      parameters:
+      - description: 提出リクエストのボディ
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.SubmitRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.OkResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: デイリータスクデータを提出するエンドポイント
+      tags:
+      - submit
   /api/v1/plans/today:
     post:
       consumes:
@@ -224,37 +255,6 @@ paths:
       summary: ユーザーのポイントを取得するエンドポイント
       tags:
       - points
-  /api/v1/submit:
-    post:
-      consumes:
-      - application/json
-      description: ユーザーがデイリータスクデータを提出する
-      operationId: submitDailyTasks
-      parameters:
-      - description: 提出リクエストのボディ
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/main.SubmitRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/main.OkResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-      summary: デイリータスクデータを提出するエンドポイント
-      tags:
-      - submit
   /api/v2/plans/suggest:
     post:
       consumes:
