@@ -1,4 +1,39 @@
 basePath: /api/v1
+definitions:
+  main.SuggestRequest:
+    properties:
+      goal:
+        type: string
+      goal_points:
+        type: integer
+      tasks:
+        items:
+          $ref: '#/definitions/main.Task'
+        type: array
+    type: object
+  main.SuggestResponse:
+    properties:
+      plans:
+        items:
+          $ref: '#/definitions/main.SuggestedPlan'
+        type: array
+    type: object
+  main.SuggestedPlan:
+    properties:
+      day:
+        type: integer
+      plans_today:
+        items:
+          $ref: '#/definitions/main.Task'
+        type: array
+    type: object
+  main.Task:
+    properties:
+      point:
+        type: integer
+      task:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -26,22 +61,33 @@ paths:
       summary: Hello Worldのエンドポイント
       tags:
       - hello
-  /ping:
-    get:
+  /api/v1/plans/suggest:
+    post:
       consumes:
       - application/json
-      description: 'Pingへのリクエストに対してJSON形式で{"message": "pong"}を返す'
-      operationId: ping
+      description: ユーザーが設定した目標とタスクに基づいて日々のお手伝いプランを生成する
+      operationId: suggestDailyPlans
+      parameters:
+      - description: 提案リクエストのボディ
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/main.SuggestRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
+            $ref: '#/definitions/main.SuggestResponse'
+        "400":
+          description: Bad Request
+          schema:
             additionalProperties:
               type: string
             type: object
-      summary: Pingのエンドポイント
+      summary: 日々のお手伝いプランを生成するエンドポイント
       tags:
-      - ping
+      - plans
 swagger: "2.0"

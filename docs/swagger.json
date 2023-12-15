@@ -39,9 +39,9 @@
                 }
             }
         },
-        "/ping": {
-            "get": {
-                "description": "Pingへのリクエストに対してJSON形式で{\"message\": \"pong\"}を返す",
+        "/api/v1/plans/suggest": {
+            "post": {
+                "description": "ユーザーが設定した目標とタスクに基づいて日々のお手伝いプランを生成する",
                 "consumes": [
                     "application/json"
                 ],
@@ -49,13 +49,30 @@
                     "application/json"
                 ],
                 "tags": [
-                    "ping"
+                    "plans"
                 ],
-                "summary": "Pingのエンドポイント",
-                "operationId": "ping",
+                "summary": "日々のお手伝いプランを生成するエンドポイント",
+                "operationId": "suggestDailyPlans",
+                "parameters": [
+                    {
+                        "description": "提案リクエストのボディ",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.SuggestRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.SuggestResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -63,6 +80,61 @@
                             }
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "main.SuggestRequest": {
+            "type": "object",
+            "properties": {
+                "goal": {
+                    "type": "string"
+                },
+                "goal_points": {
+                    "type": "integer"
+                },
+                "tasks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.Task"
+                    }
+                }
+            }
+        },
+        "main.SuggestResponse": {
+            "type": "object",
+            "properties": {
+                "plans": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.SuggestedPlan"
+                    }
+                }
+            }
+        },
+        "main.SuggestedPlan": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "integer"
+                },
+                "plans_today": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/main.Task"
+                    }
+                }
+            }
+        },
+        "main.Task": {
+            "type": "object",
+            "properties": {
+                "point": {
+                    "type": "integer"
+                },
+                "task": {
+                    "type": "string"
                 }
             }
         }
