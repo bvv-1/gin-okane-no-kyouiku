@@ -17,6 +17,8 @@
 
 ### Gin の setup
 
+インストール
+
 ```
 go mod init gin-okane-no-kyouiku
 go get -u github.com/gin-gonic/gin
@@ -24,6 +26,8 @@ go mod tidy
 ```
 
 ### swaggo (swagger) の setup
+
+インストール
 
 ```
 go install github.com/swaggo/swag/cmd/swag@latest
@@ -34,6 +38,54 @@ go get github.com/swaggo/files
 ```
 
 `main.go`の import に`_ "gin-okane-no-kyouiku/docs"` `swaggerFiles "github.com/swaggo/files"` `ginSwagger "github.com/swaggo/gin-swagger"`を追加
+
+以下を`main.go`に追加
+
+```{go}
+package main
+
+import (
+	"net/http"
+
+	_ "gin-okane-no-kyouiku/docs"
+
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+)
+
+//	@title		okane no kyouiku API
+//	@version	1.0
+//	@license.name	Apache 2.0
+//	@license.url	http://www.apache.org/licenses/LICENSE-2.0.html
+//
+// @host		localhost:8080
+// @BasePath	/api/v1
+func main() {
+	r := gin.Default()
+
+	r.GET("/ping", ping)
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	r.Run(":8080")
+}
+
+// GetPong godoc
+// @Summary Pingのエンドポイント
+// @Description Pingへのリクエストに対してJSON形式で{"message": "pong"}を返す
+// @ID ping
+// @Tags ping
+// @Accept json
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Router /ping [get]
+func ping(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"message": "pong"})
+}
+```
+
+swagger を生成
 
 ```
 swag init
