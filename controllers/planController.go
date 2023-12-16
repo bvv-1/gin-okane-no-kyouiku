@@ -104,15 +104,15 @@ func AcceptSuggestedPlans(c *gin.Context) {
 
 // @Summary 指定された日のデイリープランを取得するエンドポイント
 // @Description ユーザーが指定した日のデイリープランを取得する
-// @ID GetTodayPlans
+// @ID GetTodayPlan
 // @Tags plans
 // @Accept json
 // @Produce json
 // @Param day query int true "取得する日の番号"
-// @Success 200 {object} models.DailyPlansResponse
+// @Success 200 {array} models.Plan
 // @Failure 400 {object} httputil.HTTPError
 // @Router /api/v2/plans/today [get]
-func GetTodayPlans(c *gin.Context) {
+func GetTodayPlan(c *gin.Context) {
 	dayStr, ok := c.GetQuery("day")
 	if !ok {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("Query parameter 'day' is required").Error())
@@ -126,9 +126,9 @@ func GetTodayPlans(c *gin.Context) {
 	}
 
 	// モックデータを使用してレスポンスを生成
-	response := models.DailyPlansResponse{
+	response := models.Plan{
 		Day:        day,
-		PlansToday: []models.Task{{Name: "cleaning", Point: 5}},
+		TasksToday: []models.Task{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}},
 	}
 
 	c.JSON(http.StatusOK, response)
