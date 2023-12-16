@@ -244,6 +244,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v2/goals": {
+            "get": {
+                "description": "Get a list of goals",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goals"
+                ],
+                "summary": "Get goals",
+                "operationId": "GetGoal",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.GoalResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v2/plans/suggest": {
             "post": {
                 "description": "ユーザーが設定した目標とタスクに基づいて日々のお手伝いプランを生成する",
@@ -326,6 +356,14 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.GoalResponse": {
+            "type": "object",
+            "properties": {
+                "goal": {
+                    "$ref": "#/definitions/models.Goal"
+                }
+            }
+        },
         "controllers.SuggestRequest": {
             "type": "object",
             "properties": {
@@ -449,6 +487,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.Task"
                     }
+                }
+            }
+        },
+        "models.Goal": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "point": {
+                    "type": "integer"
                 }
             }
         },

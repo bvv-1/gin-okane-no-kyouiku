@@ -1,5 +1,10 @@
 basePath: /
 definitions:
+  controllers.GoalResponse:
+    properties:
+      goal:
+        $ref: '#/definitions/models.Goal'
+    type: object
   controllers.SuggestRequest:
     properties:
       goal:
@@ -80,6 +85,13 @@ definitions:
         items:
           $ref: '#/definitions/models.Task'
         type: array
+    type: object
+  models.Goal:
+    properties:
+      name:
+        type: string
+      point:
+        type: integer
     type: object
   models.SuggestedPlan:
     properties:
@@ -255,6 +267,26 @@ paths:
       summary: ユーザーのポイントを取得するエンドポイント
       tags:
       - points
+  /api/v2/goals:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of goals
+      operationId: GetGoal
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.GoalResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Get goals
+      tags:
+      - goals
   /api/v2/plans/suggest:
     post:
       consumes:

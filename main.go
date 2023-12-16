@@ -51,13 +51,13 @@ func main() {
 	// - POST ??: 本日のプランの達成状況をDBにセットする
 
 	r.GET("/", helloWorld)
-	// r.GET("/api/v2/goals", controllers.GetGoal)
+	r.GET("/api/v2/goals", controllers.GetGoal)
 	// r.POST("/api/v1/goals", controllers.SetGoal)
 	// r.GET("/api/v1/plans/suggested", controllers.GetSuggestedPlans)
 	// r.PUT("/api/v1/plans/suggested", controllers.AcceptSuggestedPlans)
 	// r.GET("/api/v1/goals/progress", controllers.CheckProgress)
 	// r.GET("/api/v1/plans", controllers.GetPlans)
-	// r.GET("/api/v2/plans/today", controllers.GetTodayPlans)
+	r.GET("/api/v2/plans/today", controllers.GetTodayPlans)
 	// r.POST("/api/v1/plans/today", controllers.SetTodayPlans)
 
 	r.POST("/api/v2/plans/suggest", controllers.SuggestDailyPlans) // 動詞を入れない
@@ -65,7 +65,7 @@ func main() {
 	r.GET("/api/v1/goals", checkGoal)
 	r.GET("/api/v1/plans/check", checkProgress) // 動詞を入れない
 	r.POST("/api/v1/plans/today", getDailyPlansOld)
-	r.GET("/api/v2/plans/today", controllers.GetTodayPlans)
+	// r.GET("/api/v2/plans/today", controllers.GetTodayPlans)
 	r.POST("/api/v1/plans/submit", submitDailyTasks) // 動詞を入れない, せめて名詞
 	r.GET("/api/v1/points", getUserPoints)
 
