@@ -127,6 +127,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/plans": {
+            "get": {
+                "description": "Get a list of plans",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plans"
+                ],
+                "summary": "Get plans",
+                "operationId": "GetPlans",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Plan"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/plans/accept": {
             "post": {
                 "description": "ユーザーが提案されたデイリープランを受け入れる",

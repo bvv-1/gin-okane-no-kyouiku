@@ -48,6 +48,26 @@ func SuggestDailyPlans(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// GetPlans godoc
+// @Summary Get plans
+// @Description Get a list of plans
+// @ID GetPlans
+// @Tags plans
+// @Accept  json
+// @Produce json
+// @Success 200 {array} models.Plan
+// @Failure 400 {object} httputil.HTTPError
+// @Router /api/v1/plans [get]
+func GetPlans(c *gin.Context) {
+	// モックデータを使用してレスポンスを生成
+	response := []models.Plan{
+		{Day: 1, TasksToday: []models.Task{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}}},
+		{Day: 2, TasksToday: []models.Task{{Name: "Task 3", Point: 15}, {Name: "Task 2", Point: 10}}},
+	}
+
+	c.JSON(http.StatusOK, response)
+}
+
 // GetSuggestedPlans godoc
 // @Summary Get suggested plans
 // @Description Get a list of suggested plans
