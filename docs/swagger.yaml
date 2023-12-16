@@ -1,5 +1,60 @@
 basePath: /
 definitions:
+  controllers.GoalAndTasks:
+    properties:
+      goal:
+        $ref: '#/definitions/models.Goal'
+      tasks:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+    type: object
+  controllers.GoalResponse:
+    properties:
+      goal:
+        $ref: '#/definitions/models.Goal'
+    type: object
+  controllers.ProgressRequest:
+    properties:
+      day:
+        type: integer
+      task_progress:
+        items:
+          $ref: '#/definitions/controllers.TaskAndStatus'
+        type: array
+    type: object
+  controllers.ProgressResponse:
+    properties:
+      goal:
+        $ref: '#/definitions/models.Goal'
+      on_track:
+        type: boolean
+      total_point:
+        type: integer
+    type: object
+  controllers.SuggestRequest:
+    properties:
+      goal:
+        $ref: '#/definitions/models.Goal'
+      tasks:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+    type: object
+  controllers.SuggestResponse:
+    properties:
+      plans:
+        items:
+          $ref: '#/definitions/models.SuggestedPlan'
+        type: array
+    type: object
+  controllers.TaskAndStatus:
+    properties:
+      is_done:
+        type: boolean
+      task:
+        $ref: '#/definitions/models.Task'
+    type: object
   httputil.HTTPError:
     properties:
       code:
@@ -20,19 +75,10 @@ definitions:
     properties:
       adjusted_plans:
         items:
-          $ref: '#/definitions/main.SuggestedPlan'
+          $ref: '#/definitions/models.SuggestedPlan'
         type: array
       message:
         type: string
-    type: object
-  main.DailyPlansResponse:
-    properties:
-      day:
-        type: integer
-      plans_today:
-        items:
-          $ref: '#/definitions/main.Task'
-        type: array
     type: object
   main.GetDailyPlansRequest:
     properties:
@@ -63,39 +109,46 @@ definitions:
       total_points:
         type: integer
     type: object
-  main.SuggestRequest:
-    properties:
-      goal:
-        type: string
-      goal_points:
-        type: integer
-      tasks:
-        items:
-          $ref: '#/definitions/main.Task'
-        type: array
-    type: object
-  main.SuggestResponse:
-    properties:
-      plans:
-        items:
-          $ref: '#/definitions/main.SuggestedPlan'
-        type: array
-    type: object
-  main.SuggestedPlan:
+  models.DailyPlansResponse:
     properties:
       day:
         type: integer
       plans_today:
         items:
-          $ref: '#/definitions/main.Task'
+          $ref: '#/definitions/models.Task'
         type: array
     type: object
-  main.Task:
+  models.Goal:
     properties:
+      name:
+        type: string
       point:
         type: integer
-      task:
+    type: object
+  models.Plan:
+    properties:
+      day:
+        type: integer
+      tasks_today:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+    type: object
+  models.SuggestedPlan:
+    properties:
+      day:
+        type: integer
+      plans_today:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+    type: object
+  models.Task:
+    properties:
+      name:
         type: string
+      point:
+        type: integer
     type: object
 host: localhost:8080
 info:
@@ -138,6 +191,68 @@ paths:
       summary: 現在の目標を確認するエンドポイント
       tags:
       - goals
+    post:
+      consumes:
+      - application/json
+      description: Set a goal with associated tasks
+      operationId: SetGoal
+      parameters:
+      - description: Goal and Tasks object
+        in: body
+        name: goal
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.GoalAndTasks'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Set a goal with tasks
+      tags:
+      - goals
+  /api/v1/goals/progress:
+    get:
+      description: Get the goal details, accumulated points, and whether it's on track
+      operationId: CheckProgress
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ProgressResponse'
+      summary: Check the progress of a goal
+      tags:
+      - goals
+  /api/v1/plans:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of plans
+      operationId: GetPlans
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Plan'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Get plans
+      tags:
+      - plans
   /api/v1/plans/accept:
     post:
       consumes:
@@ -212,6 +327,37 @@ paths:
       summary: デイリータスクデータを提出するエンドポイント
       tags:
       - submit
+  /api/v1/plans/suggested:
+    get:
+      description: Get a list of suggested plans
+      operationId: GetSuggestedPlans
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Plan'
+            type: array
+      summary: Get suggested plans
+      tags:
+      - plans
+    put:
+      consumes:
+      - application/json
+      description: Accept the suggested plans and update the status to "inprogress"
+      operationId: AcceptSuggestedPlans
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Accept suggested plans
+      tags:
+      - plans
   /api/v1/plans/today:
     post:
       consumes:
@@ -231,7 +377,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.DailyPlansResponse'
+            $ref: '#/definitions/models.DailyPlansResponse'
         "400":
           description: Bad Request
           schema:
@@ -255,6 +401,26 @@ paths:
       summary: ユーザーのポイントを取得するエンドポイント
       tags:
       - points
+  /api/v2/goals:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of goals
+      operationId: GetGoal
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.GoalResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Get goals
+      tags:
+      - goals
   /api/v2/plans/suggest:
     post:
       consumes:
@@ -267,14 +433,14 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/main.SuggestRequest'
+          $ref: '#/definitions/controllers.SuggestRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.SuggestResponse'
+            $ref: '#/definitions/controllers.SuggestResponse'
         "400":
           description: Bad Request
           schema:
@@ -287,7 +453,7 @@ paths:
       consumes:
       - application/json
       description: ユーザーが指定した日のデイリープランを取得する
-      operationId: getDailyPlans
+      operationId: GetTodayPlan
       parameters:
       - description: 取得する日の番号
         in: query
@@ -300,12 +466,37 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.DailyPlansResponse'
+            items:
+              $ref: '#/definitions/models.Plan'
+            type: array
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: 指定された日のデイリープランを取得するエンドポイント
+      tags:
+      - plans
+    post:
+      consumes:
+      - application/json
+      description: Submit the progress of tasks for today's plan and store in the
+        database
+      operationId: SubmitTodayProgress
+      parameters:
+      - description: Progress request object
+        in: body
+        name: progress
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ProgressRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Submit progress for today's plan
       tags:
       - plans
 swagger: "2.0"
