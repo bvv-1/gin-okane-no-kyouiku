@@ -282,6 +282,21 @@ paths:
       summary: Get suggested plans
       tags:
       - plans
+    put:
+      consumes:
+      - application/json
+      description: Accept the suggested plans and update the status to "inprogress"
+      operationId: AcceptSuggestedPlans
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Accept suggested plans
+      tags:
+      - plans
   /api/v1/plans/today:
     post:
       consumes:

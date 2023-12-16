@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"gin-okane-no-kyouiku/models"
+	httputil "gin-okane-no-kyouiku/utils"
 	"net/http"
 	"strconv"
 
@@ -63,6 +64,22 @@ func GetSuggestedPlans(c *gin.Context) {
 	}
 
 	c.JSON(200, response)
+}
+
+// AcceptSuggestedPlans godoc
+// @Summary Accept suggested plans
+// @Description Accept the suggested plans and update the status to "inprogress"
+// @ID AcceptSuggestedPlans
+// @Tags plans
+// @Accept json
+// @Produce json
+// @Success 200 {string} httputil.SuccessResponse
+// @Router /api/v1/plans/suggested [put]
+func AcceptSuggestedPlans(c *gin.Context) {
+	// モックデータを使用してレスポンスを生成
+	response := httputil.SuccessResponse{Message: "Suggested plans accepted"}
+
+	c.JSON(http.StatusOK, response)
 }
 
 // @Summary 指定された日のデイリープランを取得するエンドポイント

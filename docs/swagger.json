@@ -233,6 +233,28 @@
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Accept the suggested plans and update the status to \"inprogress\"",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plans"
+                ],
+                "summary": "Accept suggested plans",
+                "operationId": "AcceptSuggestedPlans",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/plans/today": {
