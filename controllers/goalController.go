@@ -52,7 +52,7 @@ func GetGoal(c *gin.Context) {
 // @Success 200 {string} httputil.SuccessResponse
 // @Failure 400 {object} httputil.HTTPError
 // @Router /api/v1/goals [post]
-func SetGoal(c *gin.Context) {
+func SetGoalAndTasks(c *gin.Context) {
 	// Mock request data
 	var goalAndTasks GoalAndTasks
 	if err := c.ShouldBindJSON(&goalAndTasks); err != nil {
