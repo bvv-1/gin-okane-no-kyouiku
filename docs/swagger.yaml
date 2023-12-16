@@ -1,5 +1,14 @@
 basePath: /
 definitions:
+  controllers.GoalAndTasks:
+    properties:
+      goal:
+        $ref: '#/definitions/models.Goal'
+      tasks:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+    type: object
   controllers.GoalResponse:
     properties:
       goal:
@@ -8,9 +17,7 @@ definitions:
   controllers.SuggestRequest:
     properties:
       goal:
-        type: string
-      goal_points:
-        type: integer
+        $ref: '#/definitions/models.Goal'
       tasks:
         items:
           $ref: '#/definitions/models.Task'
@@ -104,10 +111,10 @@ definitions:
     type: object
   models.Task:
     properties:
+      name:
+        type: string
       point:
         type: integer
-      task:
-        type: string
     type: object
 host: localhost:8080
 info:
@@ -148,6 +155,32 @@ paths:
           schema:
             $ref: '#/definitions/main.GoalResponse'
       summary: 現在の目標を確認するエンドポイント
+      tags:
+      - goals
+    post:
+      consumes:
+      - application/json
+      description: Set a goal with associated tasks
+      operationId: SetGoal
+      parameters:
+      - description: Goal and Tasks object
+        in: body
+        name: goal
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.GoalAndTasks'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: Set a goal with tasks
       tags:
       - goals
   /api/v1/plans/accept:

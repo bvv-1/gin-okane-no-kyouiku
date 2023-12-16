@@ -10,9 +10,8 @@ import (
 )
 
 type SuggestRequest struct {
-	Goal       string        `json:"goal"`
-	GoalPoints int           `json:"goal_points"`
-	Tasks      []models.Task `json:"tasks"`
+	Goal  models.Goal   `json:"goal"`
+	Tasks []models.Task `json:"tasks"`
 }
 
 type SuggestResponse struct {
@@ -40,7 +39,7 @@ func SuggestDailyPlans(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
 	response := SuggestResponse{
 		Plans: []models.SuggestedPlan{
-			{Day: 1, PlansToday: []models.Task{{Task: "cleaning", Point: 5}}},
+			{Day: 1, PlansToday: []models.Task{{Name: "cleaning", Point: 5}}},
 			{Day: 2, PlansToday: []models.Task{}},
 		},
 	}
@@ -74,7 +73,7 @@ func GetTodayPlans(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
 	response := models.DailyPlansResponse{
 		Day:        day,
-		PlansToday: []models.Task{{Task: "cleaning", Point: 5}},
+		PlansToday: []models.Task{{Name: "cleaning", Point: 5}},
 	}
 
 	c.JSON(http.StatusOK, response)

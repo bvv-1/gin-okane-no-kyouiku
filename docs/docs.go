@@ -65,6 +65,45 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "Set a goal with associated tasks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goals"
+                ],
+                "summary": "Set a goal with tasks",
+                "operationId": "SetGoal",
+                "parameters": [
+                    {
+                        "description": "Goal and Tasks object",
+                        "name": "goal",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.GoalAndTasks"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/plans/accept": {
@@ -356,6 +395,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.GoalAndTasks": {
+            "type": "object",
+            "properties": {
+                "goal": {
+                    "$ref": "#/definitions/models.Goal"
+                },
+                "tasks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Task"
+                    }
+                }
+            }
+        },
         "controllers.GoalResponse": {
             "type": "object",
             "properties": {
@@ -368,10 +421,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "goal": {
-                    "type": "string"
-                },
-                "goal_points": {
-                    "type": "integer"
+                    "$ref": "#/definitions/models.Goal"
                 },
                 "tasks": {
                     "type": "array",
@@ -518,11 +568,11 @@ const docTemplate = `{
         "models.Task": {
             "type": "object",
             "properties": {
+                "name": {
+                    "type": "string"
+                },
                 "point": {
                     "type": "integer"
-                },
-                "task": {
-                    "type": "string"
                 }
             }
         }

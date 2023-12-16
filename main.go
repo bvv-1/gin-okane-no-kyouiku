@@ -52,7 +52,7 @@ func main() {
 
 	r.GET("/", helloWorld)
 	r.GET("/api/v2/goals", controllers.GetGoal)
-	// r.POST("/api/v1/goals", controllers.SetGoal)
+	r.POST("/api/v1/goals", controllers.SetGoalAndTasks)
 	// r.GET("/api/v1/plans/suggested", controllers.GetSuggestedPlans)
 	// r.PUT("/api/v1/plans/suggested", controllers.AcceptSuggestedPlans)
 	// r.GET("/api/v1/goals/progress", controllers.CheckProgress)
@@ -153,7 +153,7 @@ func checkGoal(c *gin.Context) {
 }
 func getAdjustedPlans() []models.SuggestedPlan {
 	return []models.SuggestedPlan{
-		{Day: 1, PlansToday: []models.Task{{Task: "cleaning", Point: 5}}},
+		{Day: 1, PlansToday: []models.Task{{Name: "cleaning", Point: 5}}},
 		// 他の日のプランも同様に追加
 	}
 }
@@ -217,7 +217,7 @@ func getDailyPlansOld(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
 	response := models.DailyPlansResponse{
 		Day:        request.Day,
-		PlansToday: []models.Task{{Task: "cleaning", Point: 5}},
+		PlansToday: []models.Task{{Name: "cleaning", Point: 5}},
 	}
 
 	c.JSON(http.StatusOK, response)
