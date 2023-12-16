@@ -14,6 +14,15 @@ definitions:
       goal:
         $ref: '#/definitions/models.Goal'
     type: object
+  controllers.ProgressResponse:
+    properties:
+      goal:
+        $ref: '#/definitions/models.Goal'
+      on_track:
+        type: boolean
+      total_point:
+        type: integer
+    type: object
   controllers.SuggestRequest:
     properties:
       goal:
@@ -190,6 +199,20 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: Set a goal with tasks
+      tags:
+      - goals
+  /api/v1/goals/progress:
+    get:
+      description: Get the goal details, accumulated points, and whether it's on track
+      operationId: CheckProgress
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.ProgressResponse'
+      summary: Check the progress of a goal
       tags:
       - goals
   /api/v1/plans/accept:

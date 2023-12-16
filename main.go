@@ -55,7 +55,7 @@ func main() {
 	r.POST("/api/v1/goals", controllers.SetGoalAndTasks)
 	r.GET("/api/v1/plans/suggested", controllers.GetSuggestedPlans)
 	r.PUT("/api/v1/plans/suggested", controllers.AcceptSuggestedPlans)
-	// r.GET("/api/v1/goals/progress", controllers.CheckProgress)
+	r.GET("/api/v1/goals/progress", controllers.CheckProgress)
 	// r.GET("/api/v1/plans", controllers.GetPlans)
 	r.GET("/api/v2/plans/today", controllers.GetTodayPlans)
 	// r.POST("/api/v1/plans/today", controllers.SetTodayPlans)

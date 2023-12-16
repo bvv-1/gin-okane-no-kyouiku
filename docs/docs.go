@@ -106,6 +106,27 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/goals/progress": {
+            "get": {
+                "description": "Get the goal details, accumulated points, and whether it's on track",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "goals"
+                ],
+                "summary": "Check the progress of a goal",
+                "operationId": "CheckProgress",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ProgressResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/plans/accept": {
             "post": {
                 "description": "ユーザーが提案されたデイリープランを受け入れる",
@@ -460,6 +481,20 @@ const docTemplate = `{
             "properties": {
                 "goal": {
                     "$ref": "#/definitions/models.Goal"
+                }
+            }
+        },
+        "controllers.ProgressResponse": {
+            "type": "object",
+            "properties": {
+                "goal": {
+                    "$ref": "#/definitions/models.Goal"
+                },
+                "on_track": {
+                    "type": "boolean"
+                },
+                "total_point": {
+                    "type": "integer"
                 }
             }
         },
