@@ -14,6 +14,15 @@ definitions:
       goal:
         $ref: '#/definitions/models.Goal'
     type: object
+  controllers.ProgressRequest:
+    properties:
+      day:
+        type: integer
+      task_progress:
+        items:
+          $ref: '#/definitions/controllers.TaskAndStatus'
+        type: array
+    type: object
   controllers.ProgressResponse:
     properties:
       goal:
@@ -38,6 +47,13 @@ definitions:
         items:
           $ref: '#/definitions/models.SuggestedPlan'
         type: array
+    type: object
+  controllers.TaskAndStatus:
+    properties:
+      is_done:
+        type: boolean
+      task:
+        $ref: '#/definitions/models.Task'
     type: object
   httputil.HTTPError:
     properties:
@@ -437,7 +453,7 @@ paths:
       consumes:
       - application/json
       description: ユーザーが指定した日のデイリープランを取得する
-      operationId: GetTodayPlans
+      operationId: GetTodayPlan
       parameters:
       - description: 取得する日の番号
         in: query
@@ -450,12 +466,37 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.DailyPlansResponse'
+            items:
+              $ref: '#/definitions/models.Plan'
+            type: array
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: 指定された日のデイリープランを取得するエンドポイント
+      tags:
+      - plans
+    post:
+      consumes:
+      - application/json
+      description: Submit the progress of tasks for today's plan and store in the
+        database
+      operationId: SubmitTodayProgress
+      parameters:
+      - description: Progress request object
+        in: body
+        name: progress
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.ProgressRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Submit progress for today's plan
       tags:
       - plans
 swagger: "2.0"

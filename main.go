@@ -58,7 +58,7 @@ func main() {
 	r.GET("/api/v1/goals/progress", controllers.CheckProgress)
 	r.GET("/api/v1/plans", controllers.GetPlans)
 	r.GET("/api/v2/plans/today", controllers.GetTodayPlan)
-	// r.POST("/api/v1/plans/today", controllers.SubmitTodayProgress)
+	r.POST("/api/v2/plans/today", controllers.SubmitTodayProgress)
 
 	r.POST("/api/v2/plans/suggest", controllers.SuggestDailyPlans) // 動詞を入れない
 	r.POST("/api/v1/plans/accept", acceptSuggestedPlans)           // 動詞を入れない

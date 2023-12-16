@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"gin-okane-no-kyouiku/models"
 	httputil "gin-okane-no-kyouiku/utils"
 	"net/http"
@@ -17,6 +18,16 @@ type SuggestRequest struct {
 
 type SuggestResponse struct {
 	Plans []models.SuggestedPlan `json:"plans"`
+}
+
+type ProgressRequest struct {
+	Day          int             `json:"day"`
+	TaskProgress []TaskAndStatus `json:"task_progress"`
+}
+
+type TaskAndStatus struct {
+	Task   models.Task `json:"task"`
+	IsDone bool        `json:"is_done"`
 }
 
 // @Summary 日々のお手伝いプランを生成するエンドポイント
@@ -130,6 +141,37 @@ func GetTodayPlan(c *gin.Context) {
 		Day:        day,
 		TasksToday: []models.Task{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}},
 	}
+
+	c.JSON(http.StatusOK, response)
+}
+
+// SubmitTodayProgress godoc
+// @Summary Submit progress for today's plan
+// @Description Submit the progress of tasks for today's plan and store in the database
+// @ID SubmitTodayProgress
+// @Tags plans
+// @Accept json
+// @Produce json
+// @Param progress body ProgressRequest true "Progress request object"
+// @Success 200 {string} httputil.SuccessResponse
+// @Router /api/v2/plans/today [post]
+func SubmitTodayProgress(c *gin.Context) {
+	var progressRequest ProgressRequest
+
+	if err := c.ShouldBindJSON(&progressRequest); err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Invalid data format: %w", err).Error())
+		return
+	}
+
+	// progressRequest.TaskProgressをfor
+	for _, taskAndStatus := range progressRequest.TaskProgress {
+		if taskAndStatus.IsDone {
+			fmt.Printf("Task: %s, IsDone: %t\n", taskAndStatus.Task.Name, taskAndStatus.IsDone)
+		}
+	}
+
+	// モックデータを使用してレスポンスを生成
+	response := httputil.SuccessResponse{Message: "Progress submitted"}
 
 	c.JSON(http.StatusOK, response)
 }

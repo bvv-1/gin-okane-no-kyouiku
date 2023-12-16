@@ -467,7 +467,7 @@ const docTemplate = `{
                     "plans"
                 ],
                 "summary": "指定された日のデイリープランを取得するエンドポイント",
-                "operationId": "GetTodayPlans",
+                "operationId": "GetTodayPlan",
                 "parameters": [
                     {
                         "type": "integer",
@@ -481,13 +481,49 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.DailyPlansResponse"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Plan"
+                            }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Submit the progress of tasks for today's plan and store in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plans"
+                ],
+                "summary": "Submit progress for today's plan",
+                "operationId": "SubmitTodayProgress",
+                "parameters": [
+                    {
+                        "description": "Progress request object",
+                        "name": "progress",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.ProgressRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -514,6 +550,20 @@ const docTemplate = `{
             "properties": {
                 "goal": {
                     "$ref": "#/definitions/models.Goal"
+                }
+            }
+        },
+        "controllers.ProgressRequest": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "integer"
+                },
+                "task_progress": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controllers.TaskAndStatus"
+                    }
                 }
             }
         },
@@ -553,6 +603,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.SuggestedPlan"
                     }
+                }
+            }
+        },
+        "controllers.TaskAndStatus": {
+            "type": "object",
+            "properties": {
+                "is_done": {
+                    "type": "boolean"
+                },
+                "task": {
+                    "$ref": "#/definitions/models.Task"
                 }
             }
         },
