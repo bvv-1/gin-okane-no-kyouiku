@@ -47,6 +47,24 @@ func SuggestDailyPlans(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// GetSuggestedPlans godoc
+// @Summary Get suggested plans
+// @Description Get a list of suggested plans
+// @ID GetSuggestedPlans
+// @Tags plans
+// @Produce json
+// @Success 200 {array} models.Plan
+// @Router /api/v1/plans/suggested [get]
+func GetSuggestedPlans(c *gin.Context) {
+	// モックデータを使用してレスポンスを生成
+	response := []models.Plan{
+		{Day: 1, TasksToday: []models.Task{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}}},
+		{Day: 2, TasksToday: []models.Task{{Name: "Task 3", Point: 15}, {Name: "Task 2", Point: 10}}},
+	}
+
+	c.JSON(200, response)
+}
+
 // @Summary 指定された日のデイリープランを取得するエンドポイント
 // @Description ユーザーが指定した日のデイリープランを取得する
 // @ID GetTodayPlans

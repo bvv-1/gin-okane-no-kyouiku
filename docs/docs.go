@@ -218,6 +218,30 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/plans/suggested": {
+            "get": {
+                "description": "Get a list of suggested plans",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "plans"
+                ],
+                "summary": "Get suggested plans",
+                "operationId": "GetSuggestedPlans",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Plan"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/plans/today": {
             "post": {
                 "description": "ユーザーが指定した日のデイリープランを取得する",
@@ -548,6 +572,20 @@ const docTemplate = `{
                 },
                 "point": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.Plan": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "integer"
+                },
+                "tasks_today": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Task"
+                    }
                 }
             }
         },

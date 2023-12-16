@@ -100,6 +100,15 @@ definitions:
       point:
         type: integer
     type: object
+  models.Plan:
+    properties:
+      day:
+        type: integer
+      tasks_today:
+        items:
+          $ref: '#/definitions/models.Task'
+        type: array
+    type: object
   models.SuggestedPlan:
     properties:
       day:
@@ -257,6 +266,22 @@ paths:
       summary: デイリータスクデータを提出するエンドポイント
       tags:
       - submit
+  /api/v1/plans/suggested:
+    get:
+      description: Get a list of suggested plans
+      operationId: GetSuggestedPlans
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Plan'
+            type: array
+      summary: Get suggested plans
+      tags:
+      - plans
   /api/v1/plans/today:
     post:
       consumes:
