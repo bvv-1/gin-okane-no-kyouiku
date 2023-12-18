@@ -2,9 +2,8 @@ package controllers
 
 import (
 	"gin-okane-no-kyouiku/models"
+	"gin-okane-no-kyouiku/utils"
 	"net/http"
-
-	httputil "gin-okane-no-kyouiku/utils"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/xerrors"
@@ -33,7 +32,7 @@ type ProgressResponse struct {
 // @Accept  json
 // @Produce json
 // @Success 200 {object} GoalResponse
-// @Failure 400 {object} httputil.HTTPError
+// @Failure 400 {object} utils.HTTPError
 // @Router /api/v2/goals [get]
 func GetGoal(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
@@ -44,7 +43,7 @@ func GetGoal(c *gin.Context) {
 		},
 	}
 
-	c.JSON(200, response)
+	c.JSON(http.StatusOK, response)
 }
 
 // SetGoal godoc
@@ -55,8 +54,8 @@ func GetGoal(c *gin.Context) {
 // @Accept  json
 // @Produce json
 // @Param goal body GoalAndTasks true "Goal and Tasks object"
-// @Success 200 {string} httputil.SuccessResponse
-// @Failure 400 {object} httputil.HTTPError
+// @Success 200 {string} utils.SuccessResponse
+// @Failure 400 {object} utils.HTTPError
 // @Router /api/v1/goals [post]
 func SetGoalAndTasks(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
@@ -73,7 +72,7 @@ func SetGoalAndTasks(c *gin.Context) {
 	// 	return
 	// }
 
-	response := httputil.SuccessResponse{Message: "Goal and tasks set successfully"}
+	response := utils.SuccessResponse{Message: "Goal and tasks set successfully"}
 
 	// Mock success response
 	c.JSON(http.StatusOK, response)

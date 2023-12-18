@@ -55,20 +55,6 @@ definitions:
       task:
         $ref: '#/definitions/models.Task'
     type: object
-  httputil.HTTPError:
-    properties:
-      code:
-        example: 400
-        type: integer
-      message:
-        example: status bad request
-        type: string
-    type: object
-  httputil.SuccessResponse:
-    properties:
-      message:
-        type: string
-    type: object
   models.Goal:
     properties:
       name:
@@ -101,6 +87,20 @@ definitions:
       point:
         type: integer
     type: object
+  utils.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  utils.SuccessResponse:
+    properties:
+      message:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -122,7 +122,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httputil.SuccessResponse'
+            $ref: '#/definitions/utils.SuccessResponse'
       summary: Hello Worldのエンドポイント
   /api/v1/goals:
     post:
@@ -147,7 +147,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputil.HTTPError'
+            $ref: '#/definitions/utils.HTTPError'
       summary: Set a goal with tasks
       tags:
       - goals
@@ -183,7 +183,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputil.HTTPError'
+            $ref: '#/definitions/utils.HTTPError'
       summary: Get plans
       tags:
       - plans
@@ -234,7 +234,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputil.HTTPError'
+            $ref: '#/definitions/utils.HTTPError'
       summary: Get goals
       tags:
       - goals
@@ -261,7 +261,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputil.HTTPError'
+            $ref: '#/definitions/utils.HTTPError'
       summary: 日々のお手伝いプランを生成するエンドポイント
       tags:
       - plans
@@ -289,7 +289,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputil.HTTPError'
+            $ref: '#/definitions/utils.HTTPError'
       summary: 指定された日のデイリープランを取得するエンドポイント
       tags:
       - plans

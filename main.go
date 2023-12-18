@@ -5,17 +5,16 @@ import (
 
 	"time"
 
-	httputil "gin-okane-no-kyouiku/utils"
-
-	"github.com/gin-contrib/cors"
-
 	_ "gin-okane-no-kyouiku/docs"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"gin-okane-no-kyouiku/controllers"
+	"gin-okane-no-kyouiku/db"
+	"gin-okane-no-kyouiku/utils"
 )
 
 // @title okane no kyouiku API
@@ -27,6 +26,9 @@ import (
 // @BasePath /
 func main() {
 	r := gin.Default()
+
+	utils.LoadEnv()
+	db.InitDB()
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"http://localhost:5173", "https://okane-no-kyouiku.onrender.com"},
@@ -70,9 +72,9 @@ func main() {
 // @ID helloWorld
 // @Accept json
 // @Produce json
-// @Success 200 {object} httputil.SuccessResponse
+// @Success 200 {object} utils.SuccessResponse
 // @Router / [get]
 func helloWorld(c *gin.Context) {
-	response := httputil.SuccessResponse{Message: "Hello, World!"}
+	response := utils.SuccessResponse{Message: "Hello, World!"}
 	c.JSON(http.StatusOK, response)
 }
