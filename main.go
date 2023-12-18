@@ -1,21 +1,17 @@
 package main
 
 import (
+	_ "gin-okane-no-kyouiku/docs"
 	"net/http"
 
-	"time"
-
-	httputil "gin-okane-no-kyouiku/utils"
-
 	"github.com/gin-contrib/cors"
-
-	_ "gin-okane-no-kyouiku/docs"
-
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"gin-okane-no-kyouiku/controllers"
+	"gin-okane-no-kyouiku/db"
+	"gin-okane-no-kyouiku/utils"
 )
 
 // @title okane no kyouiku API
@@ -28,6 +24,9 @@ import (
 func main() {
 	r := gin.Default()
 
+	utils.LoadEnv()
+	db.InitDB()
+
 	r.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"http://localhost:5173", "https://okane-no-kyouiku.onrender.com"},
 		AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
@@ -37,7 +36,7 @@ func main() {
 			"Authorization",
 		},
 		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
+		// MaxAge:           12 * time.Hour,
 	}))
 
 	// - GET /api/v1/goals: 設定したゴールを返す
@@ -70,9 +69,10 @@ func main() {
 // @ID helloWorld
 // @Accept json
 // @Produce json
-// @Success 200 {object} httputil.SuccessResponse
+// @Success 200 {object} utils.SuccessResponse
+// @Failure 500 {object} utils.HTTPError
 // @Router / [get]
 func helloWorld(c *gin.Context) {
-	response := httputil.SuccessResponse{Message: "Hello, World!"}
+	response := utils.SuccessResponse{Message: "Hello, World!"}
 	c.JSON(http.StatusOK, response)
 }

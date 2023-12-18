@@ -3,7 +3,7 @@ package controllers
 import (
 	"fmt"
 	"gin-okane-no-kyouiku/models"
-	httputil "gin-okane-no-kyouiku/utils"
+	"gin-okane-no-kyouiku/utils"
 	"net/http"
 	"strconv"
 
@@ -38,7 +38,7 @@ type TaskAndStatus struct {
 // @Produce json
 // @Param request body SuggestRequest true "提案リクエストのボディ"
 // @Success 200 {object} SuggestResponse
-// @Failure 400 {object} httputil.HTTPError
+// @Failure 400 {object} utils.HTTPError
 // @Router /api/v2/plans/suggest [post]
 func SuggestDailyPlans(c *gin.Context) {
 	var request SuggestRequest
@@ -67,7 +67,7 @@ func SuggestDailyPlans(c *gin.Context) {
 // @Accept  json
 // @Produce json
 // @Success 200 {array} models.Plan
-// @Failure 400 {object} httputil.HTTPError
+// @Failure 400 {object} utils.HTTPError
 // @Router /api/v1/plans [get]
 func GetPlans(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
@@ -104,11 +104,11 @@ func GetSuggestedPlans(c *gin.Context) {
 // @Tags plans
 // @Accept json
 // @Produce json
-// @Success 200 {string} httputil.SuccessResponse
+// @Success 200 {string} utils.SuccessResponse
 // @Router /api/v1/plans/suggested [put]
 func AcceptSuggestedPlans(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
-	response := httputil.SuccessResponse{Message: "Suggested plans accepted"}
+	response := utils.SuccessResponse{Message: "Suggested plans accepted"}
 
 	c.JSON(http.StatusOK, response)
 }
@@ -121,7 +121,7 @@ func AcceptSuggestedPlans(c *gin.Context) {
 // @Produce json
 // @Param day query int true "取得する日の番号"
 // @Success 200 {array} models.Plan
-// @Failure 400 {object} httputil.HTTPError
+// @Failure 400 {object} utils.HTTPError
 // @Router /api/v2/plans/today [get]
 func GetTodayPlan(c *gin.Context) {
 	dayStr, ok := c.GetQuery("day")
@@ -153,7 +153,7 @@ func GetTodayPlan(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param progress body ProgressRequest true "Progress request object"
-// @Success 200 {string} httputil.SuccessResponse
+// @Success 200 {string} utils.SuccessResponse
 // @Router /api/v2/plans/today [post]
 func SubmitTodayProgress(c *gin.Context) {
 	var progressRequest ProgressRequest
@@ -171,7 +171,7 @@ func SubmitTodayProgress(c *gin.Context) {
 	}
 
 	// モックデータを使用してレスポンスを生成
-	response := httputil.SuccessResponse{Message: "Progress submitted"}
+	response := utils.SuccessResponse{Message: "Progress submitted"}
 
 	c.JSON(http.StatusOK, response)
 }
