@@ -1,11 +1,8 @@
 package main
 
 import (
-	"net/http"
-
-	"time"
-
 	_ "gin-okane-no-kyouiku/docs"
+	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -39,7 +36,7 @@ func main() {
 			"Authorization",
 		},
 		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
+		// MaxAge:           12 * time.Hour,
 	}))
 
 	// - GET /api/v1/goals: 設定したゴールを返す
@@ -73,6 +70,7 @@ func main() {
 // @Accept json
 // @Produce json
 // @Success 200 {object} utils.SuccessResponse
+// @Failure 500 {object} utils.HTTPError
 // @Router / [get]
 func helloWorld(c *gin.Context) {
 	response := utils.SuccessResponse{Message: "Hello, World!"}

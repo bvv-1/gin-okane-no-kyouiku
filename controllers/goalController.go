@@ -35,13 +35,14 @@ type ProgressResponse struct {
 // @Failure 400 {object} utils.HTTPError
 // @Router /api/v2/goals [get]
 func GetGoal(c *gin.Context) {
-	// モックデータを使用してレスポンスを生成
-	response := GoalResponse{
-		Goal: models.Goal{
-			Name:  "computer",
-			Point: 100,
-		},
+	goal, err := models.GetGoal()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to get goal: %w", err).Error())
+		return
 	}
+
+	// モックデータを使用してレスポンスを生成
+	response := GoalResponse{Goal: *goal}
 
 	c.JSON(http.StatusOK, response)
 }

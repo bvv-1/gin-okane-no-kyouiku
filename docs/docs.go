@@ -36,6 +36,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/utils.SuccessResponse"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
                     }
                 }
             }
@@ -419,6 +425,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "name": {
+                    "description": "gorm.Model",
                     "type": "string"
                 },
                 "point": {

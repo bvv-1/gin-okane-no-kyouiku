@@ -2,6 +2,7 @@ package db
 
 import (
 	// _ "github.com/go-sql-driver/mysql"
+
 	"fmt"
 	"os"
 
@@ -22,11 +23,12 @@ func InitDB() {
 	pass = os.Getenv("MYSQL_PASSWORD")
 	host = os.Getenv("MYSQL_HOST")
 	dbname := os.Getenv("MYSQL_DATABASE")
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8&parseTime=True&loc=Local", user, pass, host, dbname)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, pass, host, dbname)
+	DB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
 		panic(err.Error())
 	}
-	db.Logger.LogMode(logger.Info)
+	DB.Logger.LogMode(logger.Info)
+	db = DB
 }
