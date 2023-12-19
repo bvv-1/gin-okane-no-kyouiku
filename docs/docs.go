@@ -425,6 +425,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "name": {
+                    "description": "gorm.Model",
                     "type": "string"
                 },
                 "point": {

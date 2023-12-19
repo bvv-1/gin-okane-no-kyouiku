@@ -58,6 +58,7 @@ definitions:
   models.Goal:
     properties:
       name:
+        description: gorm.Model
         type: string
       point:
         type: integer
