@@ -57,19 +57,26 @@ definitions:
     type: object
   models.Goal:
     properties:
+      created_at:
+        type: string
+      id:
+        type: integer
       name:
-        description: gorm.Model
         type: string
       point:
         type: integer
+      status:
+        type: integer
+      user_id:
+        type: integer
     type: object
-  models.Plan:
+  models.PlanResponse:
     properties:
       day:
         type: integer
       tasks_today:
         items:
-          $ref: '#/definitions/models.Task'
+          $ref: '#/definitions/models.TaskResponse'
         type: array
     type: object
   models.SuggestedPlan:
@@ -78,10 +85,23 @@ definitions:
         type: integer
       plans_today:
         items:
-          $ref: '#/definitions/models.Task'
+          $ref: '#/definitions/models.TaskResponse'
         type: array
     type: object
   models.Task:
+    properties:
+      created_at:
+        type: string
+      goal_id:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      point:
+        type: integer
+    type: object
+  models.TaskResponse:
     properties:
       name:
         type: string
@@ -183,7 +203,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Plan'
+              $ref: '#/definitions/models.PlanResponse'
             type: array
         "400":
           description: Bad Request
@@ -203,7 +223,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Plan'
+              $ref: '#/definitions/models.PlanResponse'
             type: array
       summary: Get suggested plans
       tags:
@@ -289,7 +309,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Plan'
+              $ref: '#/definitions/models.PlanResponse'
             type: array
         "400":
           description: Bad Request

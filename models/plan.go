@@ -1,16 +1,23 @@
 package models
 
 type Plan struct {
-	Day        int    `json:"day"`
-	TasksToday []Task `json:"tasks_today"`
+	Model
+	Day    int  `json:"day"`
+	TaskID uint `json:"task_id"`
+	GoalID uint `json:"goal_id"`
+}
+
+type PlanResponse struct {
+	Day        int            `json:"day"`
+	TasksToday []TaskResponse `json:"tasks_today"`
 }
 
 type SuggestedPlan struct {
-	Day        int    `json:"day"`
-	PlansToday []Task `json:"plans_today"`
+	Day        int            `json:"day"`
+	PlansToday []TaskResponse `json:"plans_today"`
 }
 
 type DailyPlansResponse struct {
-	Day        int    `json:"day"`
-	PlansToday []Task `json:"plans_today"`
+	Day        int            `json:"day"`
+	PlansToday []TaskResponse `json:"plans_today"`
 }

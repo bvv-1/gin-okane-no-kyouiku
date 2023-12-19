@@ -128,7 +128,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Plan"
+                                "$ref": "#/definitions/models.PlanResponse"
                             }
                         }
                     },
@@ -158,7 +158,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Plan"
+                                "$ref": "#/definitions/models.PlanResponse"
                             }
                         }
                     }
@@ -287,7 +287,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Plan"
+                                "$ref": "#/definitions/models.PlanResponse"
                             }
                         }
                     },
@@ -424,16 +424,27 @@ const docTemplate = `{
         "models.Goal": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
                 "name": {
-                    "description": "gorm.Model",
                     "type": "string"
                 },
                 "point": {
                     "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
-        "models.Plan": {
+        "models.PlanResponse": {
             "type": "object",
             "properties": {
                 "day": {
@@ -442,7 +453,7 @@ const docTemplate = `{
                 "tasks_today": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Task"
+                        "$ref": "#/definitions/models.TaskResponse"
                     }
                 }
             }
@@ -456,12 +467,32 @@ const docTemplate = `{
                 "plans_today": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Task"
+                        "$ref": "#/definitions/models.TaskResponse"
                     }
                 }
             }
         },
         "models.Task": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "goal_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "point": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.TaskResponse": {
             "type": "object",
             "properties": {
                 "name": {

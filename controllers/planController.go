@@ -51,8 +51,8 @@ func SuggestDailyPlans(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
 	response := SuggestResponse{
 		Plans: []models.SuggestedPlan{
-			{Day: 1, PlansToday: []models.Task{{Name: "cleaning", Point: 5}}},
-			{Day: 2, PlansToday: []models.Task{}},
+			{Day: 1, PlansToday: []models.TaskResponse{{Name: "cleaning", Point: 5}}},
+			{Day: 2, PlansToday: []models.TaskResponse{}},
 		},
 	}
 
@@ -66,14 +66,14 @@ func SuggestDailyPlans(c *gin.Context) {
 // @Tags plans
 // @Accept  json
 // @Produce json
-// @Success 200 {array} models.Plan
+// @Success 200 {array} models.PlanResponse
 // @Failure 400 {object} utils.HTTPError
 // @Router /api/v1/plans [get]
 func GetPlans(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
-	response := []models.Plan{
-		{Day: 1, TasksToday: []models.Task{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}}},
-		{Day: 2, TasksToday: []models.Task{{Name: "Task 3", Point: 15}, {Name: "Task 2", Point: 10}}},
+	response := []models.PlanResponse{
+		{Day: 1, TasksToday: []models.TaskResponse{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}}},
+		{Day: 2, TasksToday: []models.TaskResponse{{Name: "Task 3", Point: 15}, {Name: "Task 2", Point: 10}}},
 	}
 
 	c.JSON(http.StatusOK, response)
@@ -85,13 +85,13 @@ func GetPlans(c *gin.Context) {
 // @ID GetSuggestedPlans
 // @Tags plans
 // @Produce json
-// @Success 200 {array} models.Plan
+// @Success 200 {array} models.PlanResponse
 // @Router /api/v1/plans/suggested [get]
 func GetSuggestedPlans(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
-	response := []models.Plan{
-		{Day: 1, TasksToday: []models.Task{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}}},
-		{Day: 2, TasksToday: []models.Task{{Name: "Task 3", Point: 15}, {Name: "Task 2", Point: 10}}},
+	response := []models.PlanResponse{
+		{Day: 1, TasksToday: []models.TaskResponse{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}}},
+		{Day: 2, TasksToday: []models.TaskResponse{{Name: "Task 3", Point: 15}, {Name: "Task 2", Point: 10}}},
 	}
 
 	c.JSON(200, response)
@@ -120,7 +120,7 @@ func AcceptSuggestedPlans(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param day query int true "取得する日の番号"
-// @Success 200 {array} models.Plan
+// @Success 200 {array} models.PlanResponse
 // @Failure 400 {object} utils.HTTPError
 // @Router /api/v2/plans/today [get]
 func GetTodayPlan(c *gin.Context) {
@@ -137,9 +137,9 @@ func GetTodayPlan(c *gin.Context) {
 	}
 
 	// モックデータを使用してレスポンスを生成
-	response := models.Plan{
+	response := models.PlanResponse{
 		Day:        day,
-		TasksToday: []models.Task{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}},
+		TasksToday: []models.TaskResponse{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}},
 	}
 
 	c.JSON(http.StatusOK, response)
