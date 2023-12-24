@@ -472,9 +472,6 @@ const docTemplate = `{
         "models.Task": {
             "type": "object",
             "properties": {
-                "goal_id": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 },

@@ -84,8 +84,6 @@ definitions:
     type: object
   models.Task:
     properties:
-      goal_id:
-        type: integer
       name:
         type: string
       point:

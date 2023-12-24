@@ -23,7 +23,7 @@ func GetGoal() (*Goal, error) {
 }
 
 func InsertGoalAndTasks(goal *Goal, tasks []Task) error {
-	db.GetDB().Debug().Transaction(func(tx *gorm.DB) error {
+	err := db.GetDB().Debug().Transaction(func(tx *gorm.DB) error {
 		if err := tx.Model(&Goal{}).Create(&goal).Error; err != nil {
 			return err
 		}
@@ -37,6 +37,10 @@ func InsertGoalAndTasks(goal *Goal, tasks []Task) error {
 		}
 		return nil
 	})
+
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

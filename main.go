@@ -46,7 +46,7 @@ func main() {
 	// - GET /api/v1/goals/progress: 設定したゴールと、溜まったポイントと、on trackかどうかを返す
 	// GET /api/v1/plans: 設定したプランを返す
 	// GET /api/v1/plans/today: 設定したプランのうち、本日のプランを返す
-	// - POST ??: 本日のプランの達成状況をDBにセットする
+	// - POST /api/v2/plans/today: 本日のプランの達成状況をDBにセットする
 
 	r.GET("/", helloWorld)
 	r.GET("/api/v2/goals", controllers.GetGoal)

@@ -4,7 +4,7 @@ type Task struct {
 	Model
 	Name   string `json:"name"`
 	Point  int    `json:"point"`
-	GoalID uint   `json:"goal_id"`
+	GoalID uint   `json:"-"`
 }
 
 type TaskResponse struct {
