@@ -372,7 +372,7 @@ const docTemplate = `{
                 "task_progress": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/controllers.TaskAndStatus"
+                        "$ref": "#/definitions/models.TaskAndStatus"
                     }
                 }
             }
@@ -413,17 +413,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.SuggestedPlan"
                     }
-                }
-            }
-        },
-        "controllers.TaskAndStatus": {
-            "type": "object",
-            "properties": {
-                "is_done": {
-                    "type": "boolean"
-                },
-                "task": {
-                    "$ref": "#/definitions/models.Task"
                 }
             }
         },
@@ -477,6 +466,17 @@ const docTemplate = `{
                 },
                 "point": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.TaskAndStatus": {
+            "type": "object",
+            "properties": {
+                "is_done": {
+                    "type": "boolean"
+                },
+                "task": {
+                    "$ref": "#/definitions/models.Task"
                 }
             }
         },

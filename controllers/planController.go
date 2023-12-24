@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"gin-okane-no-kyouiku/models"
 	"gin-okane-no-kyouiku/utils"
 	"net/http"
@@ -21,13 +20,8 @@ type SuggestResponse struct {
 }
 
 type ProgressRequest struct {
-	Day          int             `json:"day"`
-	TaskProgress []TaskAndStatus `json:"task_progress"`
-}
-
-type TaskAndStatus struct {
-	Task   models.Task `json:"task"`
-	IsDone bool        `json:"is_done"`
+	Day          int                    `json:"day"`
+	TaskProgress []models.TaskAndStatus `json:"task_progress"`
 }
 
 // @Summary 日々のお手伝いプランを生成するエンドポイント
@@ -166,14 +160,11 @@ func SubmitTodayProgress(c *gin.Context) {
 		return
 	}
 
-	// progressRequest.TaskProgressをfor
-	for _, taskAndStatus := range progressRequest.TaskProgress {
-		if taskAndStatus.IsDone {
-			fmt.Printf("Task: %s, IsDone: %t\n", taskAndStatus.Task.Name, taskAndStatus.IsDone)
-		}
+	err := models.InsertProgress(progressRequest.Day, progressRequest.TaskProgress)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to insert progress: %w", err).Error())
+		return
 	}
-
-	// モックデータを使用してレスポンスを生成
 
 	c.JSON(http.StatusOK, utils.SuccessResponse{Message: "Progress submitted"})
 }

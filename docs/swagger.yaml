@@ -20,7 +20,7 @@ definitions:
         type: integer
       task_progress:
         items:
-          $ref: '#/definitions/controllers.TaskAndStatus'
+          $ref: '#/definitions/models.TaskAndStatus'
         type: array
     type: object
   controllers.ProgressResponse:
@@ -47,13 +47,6 @@ definitions:
         items:
           $ref: '#/definitions/models.SuggestedPlan'
         type: array
-    type: object
-  controllers.TaskAndStatus:
-    properties:
-      is_done:
-        type: boolean
-      task:
-        $ref: '#/definitions/models.Task'
     type: object
   models.Goal:
     properties:
@@ -88,6 +81,13 @@ definitions:
         type: string
       point:
         type: integer
+    type: object
+  models.TaskAndStatus:
+    properties:
+      is_done:
+        type: boolean
+      task:
+        $ref: '#/definitions/models.Task'
     type: object
   models.TaskResponse:
     properties:
