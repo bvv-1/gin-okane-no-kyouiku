@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"gin-okane-no-kyouiku/db"
 
 	"gorm.io/gorm"
@@ -107,6 +108,9 @@ func GetPlanByDay(day int) (*PlanResponse, error) {
 		return nil
 	})
 
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return &PlanResponse{Day: day, TasksToday: []TaskResponse{}}, nil
+	}
 	if err != nil {
 		return nil, err
 	}
