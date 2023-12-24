@@ -108,7 +108,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.ProgressResponse"
+                            "$ref": "#/definitions/models.ProgressResponse"
                         }
                     }
                 }
@@ -377,20 +377,6 @@ const docTemplate = `{
                 }
             }
         },
-        "controllers.ProgressResponse": {
-            "type": "object",
-            "properties": {
-                "goal": {
-                    "$ref": "#/definitions/models.Goal"
-                },
-                "on_track": {
-                    "type": "boolean"
-                },
-                "total_point": {
-                    "type": "integer"
-                }
-            }
-        },
         "controllers.SuggestRequest": {
             "type": "object",
             "properties": {
@@ -441,6 +427,20 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.TaskResponse"
                     }
+                }
+            }
+        },
+        "models.ProgressResponse": {
+            "type": "object",
+            "properties": {
+                "goal": {
+                    "$ref": "#/definitions/models.Goal"
+                },
+                "on_track": {
+                    "type": "boolean"
+                },
+                "total_point": {
+                    "type": "integer"
                 }
             }
         },

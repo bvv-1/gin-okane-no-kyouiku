@@ -23,15 +23,6 @@ definitions:
           $ref: '#/definitions/models.TaskAndStatus'
         type: array
     type: object
-  controllers.ProgressResponse:
-    properties:
-      goal:
-        $ref: '#/definitions/models.Goal'
-      on_track:
-        type: boolean
-      total_point:
-        type: integer
-    type: object
   controllers.SuggestRequest:
     properties:
       goal:
@@ -65,6 +56,15 @@ definitions:
         items:
           $ref: '#/definitions/models.TaskResponse'
         type: array
+    type: object
+  models.ProgressResponse:
+    properties:
+      goal:
+        $ref: '#/definitions/models.Goal'
+      on_track:
+        type: boolean
+      total_point:
+        type: integer
     type: object
   models.SuggestedPlan:
     properties:
@@ -178,7 +178,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controllers.ProgressResponse'
+            $ref: '#/definitions/models.ProgressResponse'
       summary: Check the progress of a goal
       tags:
       - goals

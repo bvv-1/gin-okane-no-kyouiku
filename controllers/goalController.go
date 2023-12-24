@@ -18,12 +18,6 @@ type GoalAndTasks struct {
 	Tasks []models.Task `json:"tasks"`
 }
 
-type ProgressResponse struct {
-	Goal       models.Goal `json:"goal"`
-	TotalPoint int         `json:"total_point"`
-	OnTrack    bool        `json:"on_track"`
-}
-
 // GetGoal godoc
 // @Summary Get goals
 // @Description Get a list of goals
@@ -79,18 +73,13 @@ func SetGoalAndTasks(c *gin.Context) {
 // @ID CheckProgress
 // @Tags goals
 // @Produce json
-// @Success 200 {object} ProgressResponse
+// @Success 200 {object} models.ProgressResponse
 // @Router /api/v1/goals/progress [get]
 func CheckProgress(c *gin.Context) {
-	// モックデータを使用してレスポンスを生成
-	goal := models.Goal{Name: "My Goal", Point: 100}
-	totalPoints := 75
-	onTrack := true
-
-	response := ProgressResponse{
-		Goal:       goal,
-		TotalPoint: totalPoints,
-		OnTrack:    onTrack,
+	response, err := models.CheckProgress()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to check progress: %w", err).Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, response)
