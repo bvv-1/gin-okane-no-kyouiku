@@ -83,6 +83,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/utils.HTTPError"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
                     }
                 }
             }
@@ -102,7 +108,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.ProgressResponse"
+                            "$ref": "#/definitions/models.ProgressResponse"
                         }
                     }
                 }
@@ -128,7 +134,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Plan"
+                                "$ref": "#/definitions/models.PlanResponse"
                             }
                         }
                     },
@@ -158,7 +164,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Plan"
+                                "$ref": "#/definitions/models.PlanResponse"
                             }
                         }
                     }
@@ -287,7 +293,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Plan"
+                                "$ref": "#/definitions/models.PlanResponse"
                             }
                         }
                     },
@@ -366,22 +372,8 @@ const docTemplate = `{
                 "task_progress": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/controllers.TaskAndStatus"
+                        "$ref": "#/definitions/models.TaskAndStatus"
                     }
-                }
-            }
-        },
-        "controllers.ProgressResponse": {
-            "type": "object",
-            "properties": {
-                "goal": {
-                    "$ref": "#/definitions/models.Goal"
-                },
-                "on_track": {
-                    "type": "boolean"
-                },
-                "total_point": {
-                    "type": "integer"
                 }
             }
         },
@@ -410,30 +402,21 @@ const docTemplate = `{
                 }
             }
         },
-        "controllers.TaskAndStatus": {
-            "type": "object",
-            "properties": {
-                "is_done": {
-                    "type": "boolean"
-                },
-                "task": {
-                    "$ref": "#/definitions/models.Task"
-                }
-            }
-        },
         "models.Goal": {
             "type": "object",
             "properties": {
                 "name": {
-                    "description": "gorm.Model",
                     "type": "string"
                 },
                 "point": {
                     "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
                 }
             }
         },
-        "models.Plan": {
+        "models.PlanResponse": {
             "type": "object",
             "properties": {
                 "day": {
@@ -442,8 +425,22 @@ const docTemplate = `{
                 "tasks_today": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Task"
+                        "$ref": "#/definitions/models.TaskResponse"
                     }
+                }
+            }
+        },
+        "models.ProgressResponse": {
+            "type": "object",
+            "properties": {
+                "goal": {
+                    "$ref": "#/definitions/models.Goal"
+                },
+                "on_track": {
+                    "type": "boolean"
+                },
+                "total_point": {
+                    "type": "integer"
                 }
             }
         },
@@ -456,12 +453,34 @@ const docTemplate = `{
                 "plans_today": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.Task"
+                        "$ref": "#/definitions/models.TaskResponse"
                     }
                 }
             }
         },
         "models.Task": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "point": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.TaskAndStatus": {
+            "type": "object",
+            "properties": {
+                "is_done": {
+                    "type": "boolean"
+                },
+                "task": {
+                    "$ref": "#/definitions/models.Task"
+                }
+            }
+        },
+        "models.TaskResponse": {
             "type": "object",
             "properties": {
                 "name": {

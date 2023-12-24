@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"gin-okane-no-kyouiku/models"
 	"gin-okane-no-kyouiku/utils"
 	"net/http"
@@ -21,13 +20,8 @@ type SuggestResponse struct {
 }
 
 type ProgressRequest struct {
-	Day          int             `json:"day"`
-	TaskProgress []TaskAndStatus `json:"task_progress"`
-}
-
-type TaskAndStatus struct {
-	Task   models.Task `json:"task"`
-	IsDone bool        `json:"is_done"`
+	Day          int                    `json:"day"`
+	TaskProgress []models.TaskAndStatus `json:"task_progress"`
 }
 
 // @Summary 日々のお手伝いプランを生成するエンドポイント
@@ -51,8 +45,8 @@ func SuggestDailyPlans(c *gin.Context) {
 	// モックデータを使用してレスポンスを生成
 	response := SuggestResponse{
 		Plans: []models.SuggestedPlan{
-			{Day: 1, PlansToday: []models.Task{{Name: "cleaning", Point: 5}}},
-			{Day: 2, PlansToday: []models.Task{}},
+			{Day: 1, PlansToday: []models.TaskResponse{{Name: "cleaning", Point: 5}}},
+			{Day: 2, PlansToday: []models.TaskResponse{}},
 		},
 	}
 
@@ -66,14 +60,14 @@ func SuggestDailyPlans(c *gin.Context) {
 // @Tags plans
 // @Accept  json
 // @Produce json
-// @Success 200 {array} models.Plan
+// @Success 200 {array} models.PlanResponse
 // @Failure 400 {object} utils.HTTPError
 // @Router /api/v1/plans [get]
 func GetPlans(c *gin.Context) {
-	// モックデータを使用してレスポンスを生成
-	response := []models.Plan{
-		{Day: 1, TasksToday: []models.Task{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}}},
-		{Day: 2, TasksToday: []models.Task{{Name: "Task 3", Point: 15}, {Name: "Task 2", Point: 10}}},
+	response, err := models.GetPlans()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("failed to get plans: %w", err).Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, response)
@@ -85,13 +79,13 @@ func GetPlans(c *gin.Context) {
 // @ID GetSuggestedPlans
 // @Tags plans
 // @Produce json
-// @Success 200 {array} models.Plan
+// @Success 200 {array} models.PlanResponse
 // @Router /api/v1/plans/suggested [get]
 func GetSuggestedPlans(c *gin.Context) {
-	// モックデータを使用してレスポンスを生成
-	response := []models.Plan{
-		{Day: 1, TasksToday: []models.Task{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}}},
-		{Day: 2, TasksToday: []models.Task{{Name: "Task 3", Point: 15}, {Name: "Task 2", Point: 10}}},
+	response, err := models.GetSuggestedPlans()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("failed to get suggested plans: %w", err).Error())
+		return
 	}
 
 	c.JSON(200, response)
@@ -107,10 +101,13 @@ func GetSuggestedPlans(c *gin.Context) {
 // @Success 200 {string} utils.SuccessResponse
 // @Router /api/v1/plans/suggested [put]
 func AcceptSuggestedPlans(c *gin.Context) {
-	// モックデータを使用してレスポンスを生成
-	response := utils.SuccessResponse{Message: "Suggested plans accepted"}
+	err := models.AcceptSuggestedPlans()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("failed to accept suggested plans: %w", err).Error())
+		return
+	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, utils.SuccessResponse{Message: "Suggested plans accepted"})
 }
 
 // @Summary 指定された日のデイリープランを取得するエンドポイント
@@ -120,7 +117,7 @@ func AcceptSuggestedPlans(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param day query int true "取得する日の番号"
-// @Success 200 {array} models.Plan
+// @Success 200 {array} models.PlanResponse
 // @Failure 400 {object} utils.HTTPError
 // @Router /api/v2/plans/today [get]
 func GetTodayPlan(c *gin.Context) {
@@ -136,10 +133,10 @@ func GetTodayPlan(c *gin.Context) {
 		return
 	}
 
-	// モックデータを使用してレスポンスを生成
-	response := models.Plan{
-		Day:        day,
-		TasksToday: []models.Task{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}},
+	response, err := models.GetPlanByDay(day)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to get today's plan: %w", err).Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, response)
@@ -163,15 +160,11 @@ func SubmitTodayProgress(c *gin.Context) {
 		return
 	}
 
-	// progressRequest.TaskProgressをfor
-	for _, taskAndStatus := range progressRequest.TaskProgress {
-		if taskAndStatus.IsDone {
-			fmt.Printf("Task: %s, IsDone: %t\n", taskAndStatus.Task.Name, taskAndStatus.IsDone)
-		}
+	err := models.InsertProgress(progressRequest.Day, progressRequest.TaskProgress)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to insert progress: %w", err).Error())
+		return
 	}
 
-	// モックデータを使用してレスポンスを生成
-	response := utils.SuccessResponse{Message: "Progress submitted"}
-
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, utils.SuccessResponse{Message: "Progress submitted"})
 }

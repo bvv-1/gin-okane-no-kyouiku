@@ -39,24 +39,15 @@ func main() {
 		// MaxAge:           12 * time.Hour,
 	}))
 
-	// - GET /api/v1/goals: 設定したゴールを返す
-	// - POST /api/v1/goals: ゴールとタスクの情報を受け取って、DBにセットする
-	// - GET /api/v1/plans/suggested: DBのゴールとタスクの情報から、お手伝いプランを提案する
-	// - PUT /api/v1/plans/suggested: 提案をacceptするならプランIDとタスクIDの情報を受け取って、お手伝いプランをin progress状態に設定する
-	// - GET /api/v1/goals/progress: 設定したゴールと、溜まったポイントと、on trackかどうかを返す
-	// - GET /api/v1/plans: 設定したプランを返す
-	// - GET /api/v1/plans/today: 設定したプランのうち、本日のプランを返す
-	// - POST ??: 本日のプランの達成状況をDBにセットする
-
 	r.GET("/", helloWorld)
-	r.GET("/api/v2/goals", controllers.GetGoal)
-	r.POST("/api/v1/goals", controllers.SetGoalAndTasks)
-	r.GET("/api/v1/plans/suggested", controllers.GetSuggestedPlans)
-	r.PUT("/api/v1/plans/suggested", controllers.AcceptSuggestedPlans)
-	r.GET("/api/v1/goals/progress", controllers.CheckProgress)
-	r.GET("/api/v1/plans", controllers.GetPlans)
-	r.GET("/api/v2/plans/today", controllers.GetTodayPlan)
-	r.POST("/api/v2/plans/today", controllers.SubmitTodayProgress)
+	r.GET("/api/v2/goals", controllers.GetGoal)                        // 設定したゴールを返す
+	r.POST("/api/v1/goals", controllers.SetGoalAndTasks)               // ゴールとタスクの情報を受け取って、DBにセットする
+	r.GET("/api/v1/plans/suggested", controllers.GetSuggestedPlans)    // DBのゴールとタスクの情報から、お手伝いプランを提案する
+	r.PUT("/api/v1/plans/suggested", controllers.AcceptSuggestedPlans) // 提案をacceptするならプランIDとタスクIDの情報を受け取って、お手伝いプランをin progress状態に設定する
+	r.GET("/api/v1/goals/progress", controllers.CheckProgress)         // 設定したゴールと、溜まったポイントと、on trackかどうかを返す
+	r.GET("/api/v1/plans", controllers.GetPlans)                       // 設定したプランを返す
+	r.GET("/api/v2/plans/today", controllers.GetTodayPlan)             // 設定したプランのうち、本日のプランを返す
+	r.POST("/api/v2/plans/today", controllers.SubmitTodayProgress)     // 本日のプランの達成状況をDBにセットする
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -73,6 +64,5 @@ func main() {
 // @Failure 500 {object} utils.HTTPError
 // @Router / [get]
 func helloWorld(c *gin.Context) {
-	response := utils.SuccessResponse{Message: "Hello, World!"}
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, utils.SuccessResponse{Message: "Hello, World!"})
 }

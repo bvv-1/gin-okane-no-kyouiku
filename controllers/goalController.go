@@ -18,12 +18,6 @@ type GoalAndTasks struct {
 	Tasks []models.Task `json:"tasks"`
 }
 
-type ProgressResponse struct {
-	Goal       models.Goal `json:"goal"`
-	TotalPoint int         `json:"total_point"`
-	OnTrack    bool        `json:"on_track"`
-}
-
 // GetGoal godoc
 // @Summary Get goals
 // @Description Get a list of goals
@@ -41,13 +35,11 @@ func GetGoal(c *gin.Context) {
 		return
 	}
 
-	// モックデータを使用してレスポンスを生成
 	response := GoalResponse{Goal: *goal}
-
 	c.JSON(http.StatusOK, response)
 }
 
-// SetGoal godoc
+// SetGoalAndTasks godoc
 // @Summary Set a goal with tasks
 // @Description Set a goal with associated tasks
 // @ID SetGoal
@@ -57,26 +49,22 @@ func GetGoal(c *gin.Context) {
 // @Param goal body GoalAndTasks true "Goal and Tasks object"
 // @Success 200 {string} utils.SuccessResponse
 // @Failure 400 {object} utils.HTTPError
+// @Failure 500 {object} utils.HTTPError
 // @Router /api/v1/goals [post]
 func SetGoalAndTasks(c *gin.Context) {
-	// モックデータを使用してレスポンスを生成
-	var goalAndTasks GoalAndTasks
-	if err := c.ShouldBindJSON(&goalAndTasks); err != nil {
+	var request GoalAndTasks // swaggerではidとcreated_atを含めないようにする
+	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("Invalid data format: %w", err).Error())
 		return
 	}
 
-	// Mock DB insertion (assuming models.SetGoalWithTasks is a function in your models package)
-	// err := models.SetGoalWithTasks(goalAndTasks.Goal, goalAndTasks.Tasks)
-	// if err != nil {
-	// 	c.JSON(500, gin.H{"error": "Failed to set goal and tasks in the database"})
-	// 	return
-	// }
+	err := models.InsertGoalAndTasks(&request.Goal, request.Tasks)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, xerrors.Errorf("Failed to insert goal and tasks: %w", err).Error())
+		return
+	}
 
-	response := utils.SuccessResponse{Message: "Goal and tasks set successfully"}
-
-	// Mock success response
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, utils.SuccessResponse{Message: "Goal and tasks set successfully"})
 }
 
 // CheckProgress godoc
@@ -85,18 +73,13 @@ func SetGoalAndTasks(c *gin.Context) {
 // @ID CheckProgress
 // @Tags goals
 // @Produce json
-// @Success 200 {object} ProgressResponse
+// @Success 200 {object} models.ProgressResponse
 // @Router /api/v1/goals/progress [get]
 func CheckProgress(c *gin.Context) {
-	// モックデータを使用してレスポンスを生成
-	goal := models.Goal{Name: "My Goal", Point: 100}
-	totalPoints := 75
-	onTrack := true
-
-	response := ProgressResponse{
-		Goal:       goal,
-		TotalPoint: totalPoints,
-		OnTrack:    onTrack,
+	response, err := models.CheckProgress()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to check progress: %w", err).Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, response)

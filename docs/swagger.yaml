@@ -20,17 +20,8 @@ definitions:
         type: integer
       task_progress:
         items:
-          $ref: '#/definitions/controllers.TaskAndStatus'
+          $ref: '#/definitions/models.TaskAndStatus'
         type: array
-    type: object
-  controllers.ProgressResponse:
-    properties:
-      goal:
-        $ref: '#/definitions/models.Goal'
-      on_track:
-        type: boolean
-      total_point:
-        type: integer
     type: object
   controllers.SuggestRequest:
     properties:
@@ -48,29 +39,32 @@ definitions:
           $ref: '#/definitions/models.SuggestedPlan'
         type: array
     type: object
-  controllers.TaskAndStatus:
-    properties:
-      is_done:
-        type: boolean
-      task:
-        $ref: '#/definitions/models.Task'
-    type: object
   models.Goal:
     properties:
       name:
-        description: gorm.Model
         type: string
       point:
         type: integer
+      status:
+        type: integer
     type: object
-  models.Plan:
+  models.PlanResponse:
     properties:
       day:
         type: integer
       tasks_today:
         items:
-          $ref: '#/definitions/models.Task'
+          $ref: '#/definitions/models.TaskResponse'
         type: array
+    type: object
+  models.ProgressResponse:
+    properties:
+      goal:
+        $ref: '#/definitions/models.Goal'
+      on_track:
+        type: boolean
+      total_point:
+        type: integer
     type: object
   models.SuggestedPlan:
     properties:
@@ -78,10 +72,24 @@ definitions:
         type: integer
       plans_today:
         items:
-          $ref: '#/definitions/models.Task'
+          $ref: '#/definitions/models.TaskResponse'
         type: array
     type: object
   models.Task:
+    properties:
+      name:
+        type: string
+      point:
+        type: integer
+    type: object
+  models.TaskAndStatus:
+    properties:
+      is_done:
+        type: boolean
+      task:
+        $ref: '#/definitions/models.Task'
+    type: object
+  models.TaskResponse:
     properties:
       name:
         type: string
@@ -153,6 +161,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/utils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
       summary: Set a goal with tasks
       tags:
       - goals
@@ -166,7 +178,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controllers.ProgressResponse'
+            $ref: '#/definitions/models.ProgressResponse'
       summary: Check the progress of a goal
       tags:
       - goals
@@ -183,7 +195,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Plan'
+              $ref: '#/definitions/models.PlanResponse'
             type: array
         "400":
           description: Bad Request
@@ -203,7 +215,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Plan'
+              $ref: '#/definitions/models.PlanResponse'
             type: array
       summary: Get suggested plans
       tags:
@@ -289,7 +301,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Plan'
+              $ref: '#/definitions/models.PlanResponse'
             type: array
         "400":
           description: Bad Request
