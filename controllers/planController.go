@@ -70,10 +70,10 @@ func SuggestDailyPlans(c *gin.Context) {
 // @Failure 400 {object} utils.HTTPError
 // @Router /api/v1/plans [get]
 func GetPlans(c *gin.Context) {
-	// モックデータを使用してレスポンスを生成
-	response := []models.PlanResponse{
-		{Day: 1, TasksToday: []models.TaskResponse{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}}},
-		{Day: 2, TasksToday: []models.TaskResponse{{Name: "Task 3", Point: 15}, {Name: "Task 2", Point: 10}}},
+	response, err := models.GetPlans()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("failed to get plans: %w", err).Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, response)

@@ -113,6 +113,37 @@ func GetPlanByDay(day int) (*PlanResponse, error) {
 	return &planResponse, nil
 }
 
+func GetPlans() (*[]PlanResponse, error) {
+	var planResponse []PlanResponse
+	var tasks []Task
+
+	err := db.GetDB().Debug().Transaction(func(tx *gorm.DB) error {
+		var goal Goal
+		if err := tx.Model(&Goal{}).Where("status = ?", 1).First(&goal).Error; err != nil {
+			return err
+		}
+
+		var plans []Plan
+		if err := tx.Model(&Plan{}).Where("goal_id = ?", goal.ID).Find(&plans).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Model(&Task{}).Where("goal_id = ?", goal.ID).Find(&tasks).Error; err != nil {
+			return err
+		}
+
+		for _, plan := range plans {
+			planResponse = append(planResponse, ToPlanResponse(plan, tasks))
+		}
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+	return &planResponse, nil
+}
+
 func ToPlanResponse(plan Plan, tasks []Task) PlanResponse {
 	taskResponse := ConvertTaskIDToTaskResponse(plan.TaskID, tasks)
 
