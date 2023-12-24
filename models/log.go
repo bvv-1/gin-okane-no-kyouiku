@@ -81,7 +81,7 @@ func CheckProgress() (*ProgressResponse, error) {
 
 		var progresses []Progress
 		if err := tx.Model(&Progress{}).Exec(
-			"SELECT * FROM progresses WHERE (plan_id, task_id) IN (SELECT plan_id, task_id FROM progresses WHERE goal_id = ? GROUP BY plan_id, task_id HAVING MAX(created_at) = created_at) AND is_done = true",
+			"SELECT * FROM progresses WHERE (day, plan_id, task_id) IN (SELECT day, plan_id, task_id FROM progresses WHERE goal_id = ? GROUP BY plan_id, task_id HAVING MAX(created_at) = created_at) AND is_done = true",
 			goal.ID,
 		).Scan(&progresses).Error; err != nil {
 			return err
