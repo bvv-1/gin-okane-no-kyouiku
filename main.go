@@ -39,13 +39,13 @@ func main() {
 		// MaxAge:           12 * time.Hour,
 	}))
 
-	// - GET /api/v1/goals: 設定したゴールを返す
-	// - POST /api/v1/goals: ゴールとタスクの情報を受け取って、DBにセットする
-	// - GET /api/v1/plans/suggested: DBのゴールとタスクの情報から、お手伝いプランを提案する
-	// - PUT /api/v1/plans/suggested: 提案をacceptするならプランIDとタスクIDの情報を受け取って、お手伝いプランをin progress状態に設定する
+	// GET /api/v2/goals: 設定したゴールを返す
+	// POST /api/v1/goals: ゴールとタスクの情報を受け取って、DBにセットする
+	// GET /api/v1/plans/suggested: DBのゴールとタスクの情報から、お手伝いプランを提案する
+	// PUT /api/v1/plans/suggested: 提案をacceptするならプランIDとタスクIDの情報を受け取って、お手伝いプランをin progress状態に設定する
 	// - GET /api/v1/goals/progress: 設定したゴールと、溜まったポイントと、on trackかどうかを返す
 	// - GET /api/v1/plans: 設定したプランを返す
-	// - GET /api/v1/plans/today: 設定したプランのうち、本日のプランを返す
+	// GET /api/v1/plans/today: 設定したプランのうち、本日のプランを返す
 	// - POST ??: 本日のプランの達成状況をDBにセットする
 
 	r.GET("/", helloWorld)
@@ -73,6 +73,5 @@ func main() {
 // @Failure 500 {object} utils.HTTPError
 // @Router / [get]
 func helloWorld(c *gin.Context) {
-	response := utils.SuccessResponse{Message: "Hello, World!"}
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, utils.SuccessResponse{Message: "Hello, World!"})
 }

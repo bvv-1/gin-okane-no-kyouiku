@@ -57,17 +57,11 @@ definitions:
     type: object
   models.Goal:
     properties:
-      created_at:
-        type: string
-      id:
-        type: integer
       name:
         type: string
       point:
         type: integer
       status:
-        type: integer
-      user_id:
         type: integer
     type: object
   models.PlanResponse:
@@ -90,11 +84,7 @@ definitions:
     type: object
   models.Task:
     properties:
-      created_at:
-        type: string
       goal_id:
-        type: integer
-      id:
         type: integer
       name:
         type: string
@@ -171,6 +161,10 @@ paths:
             type: string
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+        "500":
+          description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.HTTPError'
       summary: Set a goal with tasks

@@ -3,7 +3,6 @@ package models
 import (
 	"gin-okane-no-kyouiku/db"
 
-	"golang.org/x/xerrors"
 	"gorm.io/gorm"
 )
 
@@ -17,24 +16,34 @@ type Goal struct {
 
 func GetGoal() (*Goal, error) {
 	var goal Goal
-	if err := db.GetDB().Debug().First(&goal).Error; err != nil {
-		return nil, xerrors.Errorf("failed to get goal: %w", err)
+	if err := db.GetDB().Debug().Model(&Goal{}).Order("created_at desc").First(&goal).Error; err != nil {
+		return nil, err
 	}
 	return &goal, nil
 }
 
 func InsertGoalAndTasks(goal *Goal, tasks []Task) error {
 	db.GetDB().Debug().Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&goal).Error; err != nil {
+		if err := tx.Model(&Goal{}).Create(&goal).Error; err != nil {
 			return err
 		}
-		for _, task := range tasks {
-			task.GoalID = goal.ID
-			if err := tx.Create(&task).Error; err != nil {
-				return err
-			}
+
+		for i := range tasks {
+			tasks[i].GoalID = goal.ID
+		}
+
+		if err := tx.Model(&Task{}).Create(&tasks).Error; err != nil {
+			return err
 		}
 		return nil
 	})
 	return nil
 }
+
+// func GetInProgressGoalID() (uint, error) {
+// 	var goal Goal
+// 	if err := db.GetDB().Debug().Where("status = ?", 1).First(&goal).Error; err != nil {
+// 		return 0, err
+// 	}
+// 	return goal.ID, nil
+// }

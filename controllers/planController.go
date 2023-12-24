@@ -88,10 +88,10 @@ func GetPlans(c *gin.Context) {
 // @Success 200 {array} models.PlanResponse
 // @Router /api/v1/plans/suggested [get]
 func GetSuggestedPlans(c *gin.Context) {
-	// モックデータを使用してレスポンスを生成
-	response := []models.PlanResponse{
-		{Day: 1, TasksToday: []models.TaskResponse{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}}},
-		{Day: 2, TasksToday: []models.TaskResponse{{Name: "Task 3", Point: 15}, {Name: "Task 2", Point: 10}}},
+	response, err := models.GetSuggestedPlans()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("failed to get suggested plans: %w", err).Error())
+		return
 	}
 
 	c.JSON(200, response)
@@ -107,10 +107,13 @@ func GetSuggestedPlans(c *gin.Context) {
 // @Success 200 {string} utils.SuccessResponse
 // @Router /api/v1/plans/suggested [put]
 func AcceptSuggestedPlans(c *gin.Context) {
-	// モックデータを使用してレスポンスを生成
-	response := utils.SuccessResponse{Message: "Suggested plans accepted"}
+	err := models.AcceptSuggestedPlans()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("failed to accept suggested plans: %w", err).Error())
+		return
+	}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, utils.SuccessResponse{Message: "Suggested plans accepted"})
 }
 
 // @Summary 指定された日のデイリープランを取得するエンドポイント
@@ -136,10 +139,10 @@ func GetTodayPlan(c *gin.Context) {
 		return
 	}
 
-	// モックデータを使用してレスポンスを生成
-	response := models.PlanResponse{
-		Day:        day,
-		TasksToday: []models.TaskResponse{{Name: "Task 1", Point: 5}, {Name: "Task 2", Point: 10}},
+	response, err := models.GetPlanByDay(day)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to get today's plan: %w", err).Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, response)
@@ -171,7 +174,6 @@ func SubmitTodayProgress(c *gin.Context) {
 	}
 
 	// モックデータを使用してレスポンスを生成
-	response := utils.SuccessResponse{Message: "Progress submitted"}
 
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, utils.SuccessResponse{Message: "Progress submitted"})
 }

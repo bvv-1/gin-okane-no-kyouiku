@@ -83,6 +83,12 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/utils.HTTPError"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
                     }
                 }
             }
@@ -424,12 +430,6 @@ const docTemplate = `{
         "models.Goal": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 },
@@ -437,9 +437,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "user_id": {
                     "type": "integer"
                 }
             }
@@ -475,13 +472,7 @@ const docTemplate = `{
         "models.Task": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "goal_id": {
-                    "type": "integer"
-                },
-                "id": {
                     "type": "integer"
                 },
                 "name": {

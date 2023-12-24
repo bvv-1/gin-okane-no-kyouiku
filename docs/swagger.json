@@ -76,6 +76,12 @@
                         "schema": {
                             "$ref": "#/definitions/utils.HTTPError"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
                     }
                 }
             }
@@ -417,12 +423,6 @@
         "models.Goal": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
                 "name": {
                     "type": "string"
                 },
@@ -430,9 +430,6 @@
                     "type": "integer"
                 },
                 "status": {
-                    "type": "integer"
-                },
-                "user_id": {
                     "type": "integer"
                 }
             }
@@ -468,13 +465,7 @@
         "models.Task": {
             "type": "object",
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "goal_id": {
-                    "type": "integer"
-                },
-                "id": {
                     "type": "integer"
                 },
                 "name": {

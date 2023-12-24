@@ -58,7 +58,7 @@ func GetGoal(c *gin.Context) {
 // @Failure 500 {object} utils.HTTPError
 // @Router /api/v1/goals [post]
 func SetGoalAndTasks(c *gin.Context) {
-	var request GoalAndTasks
+	var request GoalAndTasks // swaggerではidとcreated_atを含めないようにする
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("Invalid data format: %w", err).Error())
 		return
@@ -70,8 +70,7 @@ func SetGoalAndTasks(c *gin.Context) {
 		return
 	}
 
-	response := utils.SuccessResponse{Message: "Goal and tasks set successfully"}
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, utils.SuccessResponse{Message: "Goal and tasks set successfully"})
 }
 
 // CheckProgress godoc
