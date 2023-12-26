@@ -4,24 +4,16 @@ import (
 	"regexp"
 	"testing"
 
+	"gin-okane-no-kyouiku/testutils"
+
 	"github.com/DATA-DOG/go-sqlmock"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 func TestGetGoal(t *testing.T) {
-	sqlDB, mock, err := sqlmock.New()
+	mockDB, mock, err := testutils.NewMockDB()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
-	mockDB, err := gorm.Open(mysql.New(mysql.Config{
-		Conn:                      sqlDB,
-		SkipInitializeWithVersion: true, // Ref: https://zenn.dev/tatane616/scraps/27d701e8c6658e
-	}), &gorm.Config{})
-	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-	}
-	defer sqlDB.Close()
 
 	mock.ExpectQuery(regexp.QuoteMeta("SELECT * FROM `goals` ORDER BY created_at desc,`goals`.`id` LIMIT 1")).
 		WillReturnRows(
@@ -39,18 +31,10 @@ func TestGetGoal(t *testing.T) {
 }
 
 func TestInsertGoalAndTasks(t *testing.T) {
-	sqlDB, mock, err := sqlmock.New()
+	mockDB, mock, err := testutils.NewMockDB()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
-	mockDB, err := gorm.Open(mysql.New(mysql.Config{
-		Conn:                      sqlDB,
-		SkipInitializeWithVersion: true, // Ref: https://zenn.dev/tatane616/scraps/27d701e8c6658e
-	}), &gorm.Config{})
-	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-	}
-	defer sqlDB.Close()
 
 	mock.ExpectBegin()
 	mock.ExpectExec(regexp.QuoteMeta("INSERT INTO `goals` (`created_at`,`name`,`point`,`status`) VALUES (?,?,?,?)")).
