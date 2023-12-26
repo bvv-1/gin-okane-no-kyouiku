@@ -2,7 +2,7 @@ package models
 
 import (
 	"errors"
-	"gin-okane-no-kyouiku/db"
+	"math/rand"
 
 	"gorm.io/gorm"
 )
@@ -29,10 +29,10 @@ type DailyPlansResponse struct {
 	PlansToday []TaskResponse `json:"plans_today"`
 }
 
-func GetSuggestedPlans() (*[]PlanResponse, error) {
+func GetSuggestedPlans(db *gorm.DB) (*[]PlanResponse, error) {
 	var planResponse []PlanResponse
 
-	err := db.GetDB().Debug().Transaction(func(tx *gorm.DB) error {
+	err := db.Debug().Transaction(func(tx *gorm.DB) error {
 		var goal Goal
 		if err := tx.Model(&Goal{}).Order("created_at desc").First(&goal).Error; err != nil {
 			return err
@@ -43,7 +43,7 @@ func GetSuggestedPlans() (*[]PlanResponse, error) {
 			return err
 		}
 
-		var plans []Plan = generatePlans(goal, tasks)
+		var plans []Plan = GeneratePlans(goal, tasks, 2)
 		if err := tx.Model(&Plan{}).Create(&plans).Error; err != nil {
 			return err
 		}
@@ -60,18 +60,18 @@ func GetSuggestedPlans() (*[]PlanResponse, error) {
 	return &planResponse, nil
 }
 
-func generatePlans(goal Goal, tasks []Task) []Plan {
+func GeneratePlans(goal Goal, tasks []Task, days int) []Plan {
 	// TODO: ここに高度でかっこいいアルゴリズムが入る、ランダム要素あり
-	var plans = []Plan{
-		{Day: 1, TaskID: tasks[0].ID, GoalID: goal.ID},
-		{Day: 2, TaskID: tasks[0].ID, GoalID: goal.ID},
+	var plans []Plan
+	for day := 1; day <= days; day++ {
+		taskID := tasks[rand.Intn(len(tasks))].ID
+		plans = append(plans, Plan{Day: day, TaskID: taskID, GoalID: goal.ID})
 	}
-
 	return plans
 }
 
-func AcceptSuggestedPlans() error {
-	err := db.GetDB().Debug().Transaction(func(tx *gorm.DB) error {
+func AcceptSuggestedPlans(db *gorm.DB) error {
+	err := db.Debug().Transaction(func(tx *gorm.DB) error {
 		var plan Plan
 		if err := tx.Model(&Plan{}).Order("created_at desc").First(&plan).Error; err != nil {
 			return err
@@ -85,11 +85,11 @@ func AcceptSuggestedPlans() error {
 	return err
 }
 
-func GetPlanByDay(day int) (*PlanResponse, error) {
+func GetPlanByDay(db *gorm.DB, day int) (*PlanResponse, error) {
 	var planResponse PlanResponse
 	var tasks []Task
 
-	err := db.GetDB().Debug().Transaction(func(tx *gorm.DB) error {
+	err := db.Debug().Transaction(func(tx *gorm.DB) error {
 		var goal Goal
 		if err := tx.Model(&Goal{}).Where("status = ?", 1).First(&goal).Error; err != nil {
 			return err
@@ -117,11 +117,11 @@ func GetPlanByDay(day int) (*PlanResponse, error) {
 	return &planResponse, nil
 }
 
-func GetPlans() (*[]PlanResponse, error) {
+func GetPlans(db *gorm.DB) (*[]PlanResponse, error) {
 	var planResponse []PlanResponse
 	var tasks []Task
 
-	err := db.GetDB().Debug().Transaction(func(tx *gorm.DB) error {
+	err := db.Debug().Transaction(func(tx *gorm.DB) error {
 		var goal Goal
 		if err := tx.Model(&Goal{}).Where("status = ?", 1).First(&goal).Error; err != nil {
 			return err

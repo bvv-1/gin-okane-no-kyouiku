@@ -1,9 +1,10 @@
-package models
+package models_test
 
 import (
 	"regexp"
 	"testing"
 
+	"gin-okane-no-kyouiku/models"
 	"gin-okane-no-kyouiku/testutils"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -20,7 +21,7 @@ func TestGetGoal(t *testing.T) {
 			sqlmock.NewRows([]string{"id", "name", "point", "status"}).AddRow(1, "test", 10, 0),
 		)
 
-	_, err = GetGoal(mockDB)
+	_, err = models.GetGoal(mockDB)
 	if err != nil {
 		t.Errorf("error was not expected while getting goal: %s", err)
 	}
@@ -45,9 +46,9 @@ func TestInsertGoalAndTasks(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	goal := Goal{Name: "test", Point: 10, Status: 0}
-	tasks := []Task{{Name: "test", Point: 10}}
-	err = InsertGoalAndTasks(mockDB, &goal, tasks)
+	goal := models.Goal{Name: "test", Point: 10, Status: 0}
+	tasks := []models.Task{{Name: "test", Point: 10}}
+	err = models.InsertGoalAndTasks(mockDB, &goal, tasks)
 	if err != nil {
 		t.Errorf("error was not expected while inserting goal and tasks: %s", err)
 	}
