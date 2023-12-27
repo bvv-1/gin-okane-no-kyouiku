@@ -21,8 +21,7 @@ func TestGetGoal(t *testing.T) {
 			sqlmock.NewRows([]string{"id", "name", "point", "status"}).AddRow(1, "test", 10, 0),
 		)
 
-	_, err = models.GetGoal(mockDB)
-	if err != nil {
+	if _, err = models.GetGoal(mockDB); err != nil {
 		t.Errorf("error was not expected while getting goal: %s", err)
 	}
 
@@ -48,8 +47,8 @@ func TestInsertGoalAndTasks(t *testing.T) {
 
 	goal := models.Goal{Name: "test", Point: 10, Status: 0}
 	tasks := []models.Task{{Name: "test", Point: 10}}
-	err = models.InsertGoalAndTasks(mockDB, &goal, tasks)
-	if err != nil {
+
+	if err = models.InsertGoalAndTasks(mockDB, &goal, tasks); err != nil {
 		t.Errorf("error was not expected while inserting goal and tasks: %s", err)
 	}
 

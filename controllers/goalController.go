@@ -77,7 +77,7 @@ func SetGoalAndTasks(c *gin.Context) {
 // @Success 200 {object} models.ProgressResponse
 // @Router /api/v1/goals/progress [get]
 func CheckProgress(c *gin.Context) {
-	response, err := models.CheckProgress()
+	response, err := models.CheckProgress(db.GetDB())
 	if err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to check progress: %w", err).Error())
 		return

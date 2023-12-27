@@ -161,7 +161,7 @@ func SubmitTodayProgress(c *gin.Context) {
 		return
 	}
 
-	err := models.InsertProgress(progressRequest.Day, progressRequest.TaskProgress)
+	err := models.InsertProgress(db.GetDB(), progressRequest.Day, progressRequest.TaskProgress)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to insert progress: %w", err).Error())
 		return

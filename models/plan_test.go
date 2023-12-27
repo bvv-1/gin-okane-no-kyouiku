@@ -35,8 +35,7 @@ func TestGetSuggestedPlans(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	_, err = models.GetSuggestedPlans(mockDB)
-	if err != nil {
+	if _, err = models.GetSuggestedPlans(mockDB); err != nil {
 		t.Errorf("error was not expected while getting suggested plans: %s", err)
 	}
 
@@ -86,8 +85,7 @@ func TestAcceptSuggestedPlans(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	err = models.AcceptSuggestedPlans(mockDB)
-	if err != nil {
+	if err = models.AcceptSuggestedPlans(mockDB); err != nil {
 		t.Errorf("error was not expected while accepting suggested plans: %s", err)
 	}
 
@@ -120,8 +118,7 @@ func TestGetPlanByDay(t *testing.T) {
 		)
 	mock.ExpectCommit()
 
-	_, err = models.GetPlanByDay(mockDB, 1)
-	if err != nil {
+	if _, err = models.GetPlanByDay(mockDB, 1); err != nil {
 		t.Errorf("error was not expected while getting plan by day: %s", err)
 	}
 
@@ -154,8 +151,7 @@ func TestGetPlans(t *testing.T) {
 		)
 	mock.ExpectCommit()
 
-	_, err = models.GetPlans(mockDB)
-	if err != nil {
+	if _, err = models.GetPlans(mockDB); err != nil {
 		t.Errorf("error was not expected while getting plans: %s", err)
 	}
 
