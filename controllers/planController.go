@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"gin-okane-no-kyouiku/db"
 	"gin-okane-no-kyouiku/models"
 	"gin-okane-no-kyouiku/utils"
 	"net/http"
@@ -64,7 +65,7 @@ func SuggestDailyPlans(c *gin.Context) {
 // @Failure 400 {object} utils.HTTPError
 // @Router /api/v1/plans [get]
 func GetPlans(c *gin.Context) {
-	response, err := models.GetPlans()
+	response, err := models.GetPlans(db.GetDB())
 	if err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("failed to get plans: %w", err).Error())
 		return
@@ -82,7 +83,7 @@ func GetPlans(c *gin.Context) {
 // @Success 200 {array} models.PlanResponse
 // @Router /api/v1/plans/suggested [get]
 func GetSuggestedPlans(c *gin.Context) {
-	response, err := models.GetSuggestedPlans()
+	response, err := models.GetSuggestedPlans(db.GetDB())
 	if err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("failed to get suggested plans: %w", err).Error())
 		return
@@ -101,7 +102,7 @@ func GetSuggestedPlans(c *gin.Context) {
 // @Success 200 {string} utils.SuccessResponse
 // @Router /api/v1/plans/suggested [put]
 func AcceptSuggestedPlans(c *gin.Context) {
-	err := models.AcceptSuggestedPlans()
+	err := models.AcceptSuggestedPlans(db.GetDB())
 	if err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("failed to accept suggested plans: %w", err).Error())
 		return
@@ -133,7 +134,7 @@ func GetTodayPlan(c *gin.Context) {
 		return
 	}
 
-	response, err := models.GetPlanByDay(day)
+	response, err := models.GetPlanByDay(db.GetDB(), day)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to get today's plan: %w", err).Error())
 		return
@@ -160,7 +161,7 @@ func SubmitTodayProgress(c *gin.Context) {
 		return
 	}
 
-	err := models.InsertProgress(progressRequest.Day, progressRequest.TaskProgress)
+	err := models.InsertProgress(db.GetDB(), progressRequest.Day, progressRequest.TaskProgress)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to insert progress: %w", err).Error())
 		return

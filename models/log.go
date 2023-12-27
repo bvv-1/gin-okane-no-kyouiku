@@ -1,8 +1,6 @@
 package models
 
 import (
-	"gin-okane-no-kyouiku/db"
-
 	"gorm.io/gorm"
 )
 
@@ -28,8 +26,8 @@ type TaskAndStatus struct {
 	IsDone bool `json:"is_done"`
 }
 
-func InsertProgress(day int, taskProgress []TaskAndStatus) error {
-	err := db.GetDB().Debug().Transaction(func(tx *gorm.DB) error {
+func InsertProgress(db *gorm.DB, day int, taskProgress []TaskAndStatus) error {
+	err := db.Debug().Transaction(func(tx *gorm.DB) error {
 		var progresses []Progress
 		for _, taskAndStatus := range taskProgress {
 			var goal Goal
@@ -70,10 +68,10 @@ func InsertProgress(day int, taskProgress []TaskAndStatus) error {
 	return nil
 }
 
-func CheckProgress() (*ProgressResponse, error) {
+func CheckProgress(db *gorm.DB) (*ProgressResponse, error) {
 	var progressResponse ProgressResponse
 
-	err := db.GetDB().Debug().Transaction(func(tx *gorm.DB) error {
+	err := db.Debug().Transaction(func(tx *gorm.DB) error {
 		var goal Goal
 		if err := tx.Model(&Goal{}).Where("status = ?", 1).First(&goal).Error; err != nil {
 			return err

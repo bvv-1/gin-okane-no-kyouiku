@@ -10,6 +10,7 @@ require (
 )
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.1
 	github.com/gin-contrib/cors v1.5.0
 	github.com/joho/godotenv v1.5.1
 	gorm.io/driver/mysql v1.5.2

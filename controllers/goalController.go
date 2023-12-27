@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"gin-okane-no-kyouiku/db"
 	"gin-okane-no-kyouiku/models"
 	"gin-okane-no-kyouiku/utils"
 	"net/http"
@@ -29,7 +30,7 @@ type GoalAndTasks struct {
 // @Failure 400 {object} utils.HTTPError
 // @Router /api/v2/goals [get]
 func GetGoal(c *gin.Context) {
-	goal, err := models.GetGoal()
+	goal, err := models.GetGoal(db.GetDB())
 	if err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to get goal: %w", err).Error())
 		return
@@ -58,7 +59,7 @@ func SetGoalAndTasks(c *gin.Context) {
 		return
 	}
 
-	err := models.InsertGoalAndTasks(&request.Goal, request.Tasks)
+	err := models.InsertGoalAndTasks(db.GetDB(), &request.Goal, request.Tasks)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, xerrors.Errorf("Failed to insert goal and tasks: %w", err).Error())
 		return
@@ -76,7 +77,7 @@ func SetGoalAndTasks(c *gin.Context) {
 // @Success 200 {object} models.ProgressResponse
 // @Router /api/v1/goals/progress [get]
 func CheckProgress(c *gin.Context) {
-	response, err := models.CheckProgress()
+	response, err := models.CheckProgress(db.GetDB())
 	if err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to check progress: %w", err).Error())
 		return
