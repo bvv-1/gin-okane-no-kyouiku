@@ -44,9 +44,14 @@ func TestGetSuggestedPlans(t *testing.T) {
 	}
 }
 
+func NewRand() *rand.Rand {
+	return rand.New(rand.NewSource(time.Now().UnixNano()))
+}
+
 func TestGeneratePlans(t *testing.T) {
 	// シードを設定
-	rand.Seed(time.Now().UnixNano())
+	// rand.Seed(time.Now().UnixNano())
+	rand := NewRand()
 
 	testGoal := models.Goal{Name: "test", Point: 10, Status: 0}
 	testTasks := []models.Task{
