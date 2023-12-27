@@ -1,8 +1,8 @@
 package models_test
 
 import (
+	"fmt"
 	"math/rand"
-	"reflect"
 	"regexp"
 	"testing"
 	"time"
@@ -48,30 +48,25 @@ func NewRand() *rand.Rand {
 	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }
 
-func TestGeneratePlans(t *testing.T) {
-	// シードを設定
-	// rand.Seed(time.Now().UnixNano())
-	rand := NewRand()
-
-	testGoal := models.Goal{Name: "test", Point: 10, Status: 0}
-	testTasks := []models.Task{
-		{Name: "test1", Point: 10, GoalID: 1},
-		{Name: "test2", Point: 20, GoalID: 1},
-		{Name: "test3", Point: 30, GoalID: 1},
-	}
-	testDays := 5
-
-	result := models.GeneratePlans(testGoal, testTasks, testDays)
-
-	expectedResult := make([]models.Plan, testDays)
-	for day := 1; day <= testDays; day++ {
-		taskID := testTasks[rand.Intn(len(testTasks))].ID
-		expectedResult[day-1] = models.Plan{Day: day, TaskID: taskID, GoalID: testGoal.ID}
+func ExampleGeneratePlans() {
+	goal := &models.Goal{Name: "test", Point: 100, Status: 0}
+	tasks := []models.Task{
+		{Name: "task1", Point: 10, GoalID: 1},
+		{Name: "task2", Point: 20, GoalID: 1},
+		{Name: "task3", Point: 30, GoalID: 1},
+		{Name: "task4", Point: 40, GoalID: 1},
 	}
 
-	if !reflect.DeepEqual(result, expectedResult) {
-		t.Errorf("GeneratePlans() returned %+v, expected %+v", result, expectedResult)
+	plans := models.GeneratePlans(*goal, tasks, 3)
+
+	for _, plan := range plans {
+		fmt.Println(plan.Day, plan.TaskID, plan.GoalID)
 	}
+
+	// Output:
+	// 1 0 0
+	// 2 0 0
+	// 3 0 0
 }
 
 func TestAcceptSuggestedPlans(t *testing.T) {
