@@ -50,6 +50,7 @@ func main() {
 	r.POST("/api/v2/plans/today", controllers.SubmitTodayProgress)     // 本日のプランの達成状況をDBにセットする
 
 	r.POST("api/v2/register", controllers.Register)
+	r.POST("api/v2/login", controllers.Login)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

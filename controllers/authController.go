@@ -41,3 +41,40 @@ func Register(c *gin.Context) {
 
 	c.JSON(http.StatusOK, utils.SuccessResponse{Message: "OK"})
 }
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	Token string `json:"token"`
+}
+
+// Login godoc
+// @Summary Login a user
+// @Description Login a user
+// @ID Login
+// @Tags auth
+// @Accept  json
+// @Produce json
+// @Param user body LoginRequest true "LoginRequest object"
+// @Success 200 {string} LoginResponse
+// @Failure 400 {object} utils.HTTPError
+// @Router /api/v2/login [post]
+func Login(c *gin.Context) {
+	var request LoginRequest
+
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Invalid data format: %w", err).Error())
+		return
+	}
+
+	token, err := models.LoginCheck(db.GetDB(), request.Email, request.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to login: %w", err).Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, LoginResponse{Token: token})
+}

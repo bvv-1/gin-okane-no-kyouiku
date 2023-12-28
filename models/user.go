@@ -1,6 +1,7 @@
 package models
 
 import (
+	"gin-okane-no-kyouiku/utils/token"
 	"html"
 	"strings"
 
@@ -37,4 +38,24 @@ func (u *User) BeforeSave() error {
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 
 	return nil
+}
+
+func VerifyPassword(hashedPassword, password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func LoginCheck(db *gorm.DB, email string, password string) (string, error) {
+	var user User
+	if err := db.Debug().Model(&User{}).Where("email = ?", email).Take(&user).Error; err != nil {
+		return "", err
+	}
+	if err := VerifyPassword(user.Password, password); err != nil {
+		return "", err
+	}
+
+	token, err := token.GenerateToken(user.ID)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
 }
