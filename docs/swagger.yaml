@@ -23,6 +23,13 @@ definitions:
           $ref: '#/definitions/models.TaskAndStatus'
         type: array
     type: object
+  controllers.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   controllers.SuggestRequest:
     properties:
       goal:
@@ -333,4 +340,31 @@ paths:
       summary: Submit progress for today's plan
       tags:
       - plans
+  /api/v2/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a user
+      operationId: Register
+      parameters:
+      - description: RegisterRequest object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+      summary: Register a user
+      tags:
+      - auth
 swagger: "2.0"

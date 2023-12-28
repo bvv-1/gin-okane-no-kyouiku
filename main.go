@@ -49,6 +49,8 @@ func main() {
 	r.GET("/api/v2/plans/today", controllers.GetTodayPlan)             // 設定したプランのうち、本日のプランを返す
 	r.POST("/api/v2/plans/today", controllers.SubmitTodayProgress)     // 本日のプランの達成状況をDBにセットする
 
+	r.POST("api/v2/register", controllers.Register)
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if err := r.Run(":8080"); err != nil {
