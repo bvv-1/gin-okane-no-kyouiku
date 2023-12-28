@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"gin-okane-no-kyouiku/db"
+	"gin-okane-no-kyouiku/models"
 	"gin-okane-no-kyouiku/utils"
 	"net/http"
 
@@ -29,6 +31,11 @@ func Register(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, xerrors.Errorf("Invalid data format: %w", err).Error())
+		return
+	}
+
+	if err := models.InsertUser(db.GetDB(), request.Email, request.Password); err != nil {
+		c.JSON(http.StatusBadRequest, xerrors.Errorf("Failed to register: %w", err).Error())
 		return
 	}
 
