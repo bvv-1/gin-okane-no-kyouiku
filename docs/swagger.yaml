@@ -14,6 +14,13 @@ definitions:
       goal:
         $ref: '#/definitions/models.Goal'
     type: object
+  controllers.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   controllers.ProgressRequest:
     properties:
       day:
@@ -22,6 +29,13 @@ definitions:
         items:
           $ref: '#/definitions/models.TaskAndStatus'
         type: array
+    type: object
+  controllers.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
     type: object
   controllers.SuggestRequest:
     properties:
@@ -255,6 +269,33 @@ paths:
       summary: Get goals
       tags:
       - goals
+  /api/v2/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      operationId: Login
+      parameters:
+      - description: LoginRequest object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+      summary: Login a user
+      tags:
+      - auth
   /api/v2/plans/suggest:
     post:
       consumes:
@@ -333,4 +374,31 @@ paths:
       summary: Submit progress for today's plan
       tags:
       - plans
+  /api/v2/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a user
+      operationId: Register
+      parameters:
+      - description: RegisterRequest object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.HTTPError'
+      summary: Register a user
+      tags:
+      - auth
 swagger: "2.0"

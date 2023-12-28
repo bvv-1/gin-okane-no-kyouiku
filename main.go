@@ -46,8 +46,18 @@ func main() {
 	r.PUT("/api/v1/plans/suggested", controllers.AcceptSuggestedPlans) // 提案をacceptするならプランIDとタスクIDの情報を受け取って、お手伝いプランをin progress状態に設定する
 	r.GET("/api/v1/goals/progress", controllers.CheckProgress)         // 設定したゴールと、溜まったポイントと、on trackかどうかを返す
 	r.GET("/api/v1/plans", controllers.GetPlans)                       // 設定したプランを返す
-	r.GET("/api/v2/plans/today", controllers.GetTodayPlan)             // 設定したプランのうち、本日のプランを返す
-	r.POST("/api/v2/plans/today", controllers.SubmitTodayProgress)     // 本日のプランの達成状況をDBにセットする
+
+	r.POST("/api/v2/goals", controllers.SetGoalAndTasks)               // ゴールとタスクの情報を受け取って、DBにセットする
+	r.GET("/api/v2/plans/suggested", controllers.GetSuggestedPlans)    // DBのゴールとタスクの情報から、お手伝いプランを提案する
+	r.PUT("/api/v2/plans/suggested", controllers.AcceptSuggestedPlans) // 提案をacceptするならプランIDとタスクIDの情報を受け取って、お手伝いプランをin progress状態に設定する
+	r.GET("/api/v2/goals/progress", controllers.CheckProgress)         // 設定したゴールと、溜まったポイントと、on trackかどうかを返す
+	r.GET("/api/v2/plans", controllers.GetPlans)                       // 設定したプランを返す
+
+	r.GET("/api/v2/plans/today", controllers.GetTodayPlan)         // 設定したプランのうち、本日のプランを返す
+	r.POST("/api/v2/plans/today", controllers.SubmitTodayProgress) // 本日のプランの達成状況をDBにセットする
+
+	r.POST("api/v2/register", controllers.Register)
+	r.POST("api/v2/login", controllers.Login)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

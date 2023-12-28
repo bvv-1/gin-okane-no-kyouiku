@@ -223,6 +223,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v2/login": {
+            "post": {
+                "description": "Login a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login a user",
+                "operationId": "Login",
+                "parameters": [
+                    {
+                        "description": "LoginRequest object",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v2/plans/suggest": {
             "post": {
                 "description": "ユーザーが設定した目標とタスクに基づいて日々のお手伝いプランを生成する",
@@ -338,6 +379,47 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/v2/register": {
+            "post": {
+                "description": "Register a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Register a user",
+                "operationId": "Register",
+                "parameters": [
+                    {
+                        "description": "RegisterRequest object",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -363,6 +445,17 @@ const docTemplate = `{
                 }
             }
         },
+        "controllers.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.ProgressRequest": {
             "type": "object",
             "properties": {
@@ -374,6 +467,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.TaskAndStatus"
                     }
+                }
+            }
+        },
+        "controllers.RegisterRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
                 }
             }
         },
