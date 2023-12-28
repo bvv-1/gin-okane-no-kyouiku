@@ -20,7 +20,9 @@ func InsertUser(db *gorm.DB, email string, password string) error {
 		Email:    email,
 		Password: password,
 	}
-	user.BeforeSave()
+	if err := user.BeforeSave(); err != nil {
+		return err
+	}
 	if err := db.Debug().Model(&User{}).Create(&user).Error; err != nil {
 		return err
 	}
