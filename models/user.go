@@ -20,16 +20,13 @@ func InsertUser(db *gorm.DB, email string, password string) error {
 		Email:    email,
 		Password: password,
 	}
-	if err := user.BeforeSave(); err != nil {
-		return err
-	}
 	if err := db.Debug().Model(&User{}).Create(&user).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *User) BeforeSave() error {
+func (u *User) BeforeSave(db *gorm.DB) error {
 	// Ref) https://gorm.io/docs/hooks.html
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
